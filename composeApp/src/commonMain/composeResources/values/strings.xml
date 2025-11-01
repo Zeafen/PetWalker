@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name">Pet Walker</string>
+
+    <!--Screen headers-->
+    <string name="map_screen_header">PetWalker Map</string>
+    <string name="profile_page_header">Profile</string>
+    <string name="walkers_page_header">Walkers</string>
+    <string name="walker_details_pages_header">Walker</string>
+    <string name="assignments_page_header">Assignments</string>
+    <string name="own_assignments_page_header">Own Assignments</string>
+    <string name="recruitments_page_header">Recruitments</string>
+    <string name="assignment_details_pages_header">Assignment</string>
+    <string name="pets_screen_header">Pets</string>
+    <string name="posts_page_header">Posts</string>
+    <string name="post_info_page_screen_header">Post info</string>
+    <string name="pet_details_page_header">Pet profile</string>
+    <string name="login_page_header">Let`s Sign In</string>
+    <string name="login_page_slogan">Experience pet boarding|caring|walking helper for everyone</string>
+    <string name="signup_page_header">Sign Up For Free</string>
+    <string name="signup_page_slogan">Join us for less than 5 minutes, with no cost</string>
+    <string name="loading_label">Now loading…</string>
+    <string name="error_info_page_header">Oops, something went wrong…</string>
+    <string name="error_info_content">Oops, something went wrong: %1$s</string>
+    <string name="forgot_password_page_slogan_first">No worries, we`ll send you reset instructions</string>
+    <string name="forgot_password_page_slogan_second">We\'ve sent a confirmation code to a specified email, please, put it down before it expires</string>
+    <string name="forgot_password_page_slogan_third">Set new reliable and memorable password</string>
+
+    <!--Element labels-->
+    <string name="payment_label">Payment</string>
+    <string name="desired_payment_label">Desired payment type</string>
+    <string name="check_walker_details_label">Check walker info for more details</string>
+    <string name="recruiting_label">Recruiting</string>
+    <string name="login_email_input_label">Login or Email address</string>
+    <string name="email_input_label">Email address</string>
+    <string name="code_input_label">Verification code</string>
+    <string name="login_input_label">Login</string>
+    <string name="password_input_label">Password</string>
+    <string name="repeat_password_input_label">Repeat password</string>
+    <string name="first_name_input_label">First name</string>
+    <string name="last_name_input_label">Last name</string>
+    <string name="phone_input_label">Phone</string>
+    <string name="max_distance_option_label">Max distance</string>
+    <string name="confirmation_code_input_label">Confirmation code</string>
+    <string name="age_years_txt">%1$s years</string>
+    <string name="born_at_txt">Born at: %1$s</string>
+    <string name="repeating_orders_count_label">%1$d repeating orders</string>
+    <string name="online_label">Online</string>
+    <string name="offline_label">Offline</string>
+    <string name="ordering_label">Order by</string>
+    <string name="filters_label">Filters</string>
+    <string name="services_label">Services</string>
+    <string name="user_service_label">User service</string>
+    <string name="complaints_count_label">Complaints count</string>
+    <string name="status_label">Status</string>
+    <string name="account_status_str">Status: %1$s</string>
+    <string name="positive_label">Positive</string>
+    <string name="date_period_label">Date period</string>
+    <string name="date_selection_label">Select the date…</string>
+    <string name="date_period_end_label">Date period end</string>
+    <string name="date_period_start_label">Date period start</string>
+    <string name="about_me_label">About me</string>
+    <string name="more_label">More</string>
+    <string name="less_label">Less</string>
+    <string name="description_label">Description</string>
+    <string name="name_label">Name</string>
+    <string name="topic_label">Topic</string>
+    <string name="closed_label">Closed</string>
+    <string name="opened_channel_label">Live</string>
+    <string name="species_label">Species</string>
+    <string name="breed_label">Species</string>
+    <string name="age_label">Age</string>
+    <string name="weight_label">Weight</string>
+    <string name="medical_info_label">Medical info</string>
+    <string name="category_selection_label">Category</string>
+    <string name="state_selection_label">State</string>
+    <string name="success_label">Success!!!</string>
+    <string name="empty_label">Empty</string>
+    <string name="required_label">* Required</string>
+    <string name="title_label">Title</string>
+    <string name="text_label">Text</string>
+    <string name="type_label">Type</string>
+    <string name="show_as_walker_label">Show as walker</string>
+    <string name="are_sure_label">Are you sure?</string>
+    <string name="confirm_delete_account_label">Confirm to delete account?</string>
+    <string name="confirm_change_status_label">Confirm to change status to %1$s</string>
+    <string name="confirm_delete_assignment_label">Confirm to delete assignment</string>
+    <string name="confirm_delete_pet_label">Confirm to delete pet</string>
+    <string name="confirm_delete_recruitment_label">Confirm to delete recruitment</string>
+    <string name="confirm_logout_text_label">Confirm to log out?</string>
+
+    <string name="login_email_input_hint">Enter your login or email…</string>
+    <string name="email_input_hint">Enter your email…</string>
+    <string name="login_input_hint">Enter your login…</string>
+    <string name="password_input_hint">Enter your password…</string>
+    <string name="repeat_password_input_hint">Repeat your password…</string>
+    <string name="first_name_input_hint">Enter your first name…</string>
+    <string name="last_name_input_hint">Enter your last name…</string>
+    <string name="phone_input_hint">Enter your phone number…</string>
+    <string name="confirmation_code_input_hint">Enter the code we`ve sent…</string>
+    <string name="search_field_hint">Search</string>
+    <string name="name_search_field_hint">Enter name…</string>
+    <string name="species_search_field_hint">Enter species…</string>
+    <string name="breed_search_field_hint">Enter breed…</string>
+    <string name="assign_pets_hint">Assign pets…</string>
+    <string name="float_input_hint">Enter decimal number…</string>
+    <string name="int_input_hint">Enter integer number…</string>
+    <string name="topic_input_hint">Enter topic…</string>
+    <string name="title_input_hint">Enter the brief description of the main topic</string>
+    <string name="description_input_hint">Describe the details…</string>
+    <string name="about_me_input_hint">Enter a brief description of yourself here.</string>
+    <string name="commentary_input_string">Enter commentary body…</string>
+    <string name="option_selection_hint">Select from available options…</string>
+
+    <string name="sign_in_btn_text">Sign In</string>
+    <string name="sign_up_btn_text">Sign Up</string>
+    <string name="reload_btn_text">Reload</string>
+    <string name="forgot_password_btn_text">Forgot Password</string>
+    <string name="send_code_btn_txt">Send code</string>
+    <string name="confirm_btn_txt">Confirm</string>
+    <string name="change_password_btn_txt">Change password</string>
+    <string name="change_email_btn_txt">Change email</string>
+    <string name="change_login_btn_txt">Change login</string>
+    <string name="clear_btn_txt">Clear</string>
+    <string name="cancel_btn_txt">Cancel</string>
+    <string name="done_btn_txt">Done</string>
+    <string name="add_btn_txt">Add</string>
+    <string name="reviews_count_txt">%1$d reviews</string>
+    <string name="complaints_count_txt">%1$d complaints</string>
+    <string name="active_count_txt">%1$d active</string>
+    <string name="solved_count_txt">%1$d solved</string>
+    <string name="unread_messages_count_txt">%1$d Unread messages</string>
+    <string name="channel_id_txt">Channel %1$s</string>
+    <string name="see_assignment_btn_txt">See assignment</string>
+    <string name="see_walker_btn_txt">See walker</string>
+    <string name="track_walker_btn_txt">Track walker</string>
+    <string name="accept_btn_txt">Accept</string>
+    <string name="decline_btn_txt">Decline</string>
+    <string name="distance_from_user_txt">%1$s km from you</string>
+    <string name="payment_dollar_txt">Payment: %1$s $</string>
+    <string name="payment_rubbles_txt">Payment: %1$s ₽</string>
+    <string name="weigh_txt">%1$s kg</string>
+    <string name="pet_description_label_txt">About %1$s</string>
+    <string name="child_commentaries_count_txt">%1$s child commentaries</string>
+    <string name="date_edited_txt">Edited: %1$s</string>
+    <string name="complete_btn_txt">Complete</string>
+    <string name="close_btn_txt">Close</string>
+    <string name="start_btn_txt">Start</string>
+    <string name="leave_review_btn_txt">Leave a review</string>
+    <string name="pick_location_btn_text">Pick location</string>
+    <string name="set_default_location_btn_text">Change default location</string>
+
+    <string name="sign_up_link_txt">Don`t have an account?</string>
+    <string name="sign_in_link_txt">Already have an account?</string>
+    <string name="back_to_login_link_txt">Back to sign in</string>
+
+
+    <!--Error info -->
+    <string name="undefined_txt">Undefined</string>
+    <string name="max_amount_reached_error_txt">Maximum amount reached…</string>
+    <string name="passwords_match_error_txt">Passwords don`t match</string>
+    <string name="invalid_confirmation_code_error_txt">Incorrect confirmation code</string>
+    <string name="invalid_email_format_error_txt">This email`s format is invalid</string>
+    <string name="invalid_phone_format_error_txt">This phone`s format is invalid</string>
+    <string name="unauthorized_error_txt">Unauthorized</string>
+    <string name="nan_error_txt">Not a number</string>
+    <string name="incorrect_length_least_error">Value length must be at least %1$d</string>
+    <string name="length_max_error">Value length must have maximum %1$d symbols length</string>
+    <string name="login_taken_error_txt">Login is already taken</string>
+    <string name="must_contain_least_numbers_error">Value must contain at least %1$d numbers</string>
+    <string name="must_contain_least_letters_error">Value must contain at least %1$d letters</string>
+    <string name="least_words_count_error_txt">Value must contain at least %1$d words</string>
+    <string name="must_contain_specials_error">Value must contain specials</string>
+    <string name="must_contain_uppercase">Value must contain upper case letters</string>
+    <string name="must_contain_lowercase">Value must contain lower case letters</string>
+    <string name="loading_error_txt">An unexpected error was occupied while loading data</string>
+    <string name="sending_error_txt">Sending issue…</string>
+    <string name="default_description_txt">No description passed</string>
+    <string name="empty_fields_error_txt">Don`t leave these fields empty</string>
+    <string name="greater_than_error_txt">Value must be greater that %1$d</string>
+    <string name="less_than_error_txt">Value must be less that %1$d</string>
+    <string name="early_error_error_txt">Too early…</string>
+    <string name="date_less_than_error_txt">Date must be earlier than %1$s</string>
+    <string name="file_already_exists_error_txt">File with this name already exists</string>
+    <string name="file_not_found_error_txt">Cannot find file with specified name</string>
+    <string name="cannot_access_file_error_txt">Cannot access desired file/directory</string>
+    <string name="option_not_selected_error">None of available options is selected</string>
+
+    <string name="request_time_out_error">Request time out</string>
+    <string name="unauthorized_error">Unauthorized</string>
+    <string name="conflict_error">Conflict occupied. Please, check the inputted data</string>
+    <string name="server_error">Server returned error. Sorry, please, try again later</string>
+    <string name="no_internet_error">Unstable internet connection</string>
+    <string name="not_found_error">Desirable data was not found</string>
+    <string name="payload_too_large_data">Oops, server cannot handle payload data of this size. Select less voluminous file</string>
+    <string name="serialization_error">Unexpected data structure was obtained. Unable to interpret it properly</string>
+    <string name="unknown_error">Sorry, we cannot define error. Please, try again later</string>
+
+
+
+
+
+<!--Enum displays-->
+    <string name="walkers_only_presentation_type_name">Walkers Only</string>
+    <string name="assignments_only_presentation_type_name">Assignments Only</string>
+    <string name="assignments_walkers_presentation_type_name">Assignments and Walkers</string>
+
+    <string name="rating_ordering_display_name">Rating</string>
+    <string name="user_rating_ordering_display_name">Owner rating</string>
+    <string name="pet_count_ordering_display_name">Pets amount</string>
+    <string name="services_count_ordering_display_name">Services Count</string>
+    <string name="location_ordering_display_name">Distance</string>
+
+    <string name="pending_status_display_name">Pending</string>
+    <string name="verified_status_display_name">Verified</string>
+    <string name="banned_status_display_name">Banned</string>
+    <string name="active_status_display_name">Active</string>
+    <string name="dismissed_status_display_name">Dismissed</string>
+    <string name="solved_status_display_name">Solved</string>
+
+    <string name="accepted_state_display_name">Accepted</string>
+    <string name="denied_state_display_name">Denied</string>
+
+    <string name="toxic_behaviour_topic_display_name">Toxic behaviour</string>
+    <string name="pet_harm_topic_display_name">Pet harm</string>
+
+    <string name="incoming_tab_display_name">Incoming</string>
+    <string name="outcoming_tab_display_name">Out Coming</string>
+
+    <string name="best_walker_tab_display_name">Best walker</string>
+    <string name="featured_walkers_tab_display_name">Featured walkers</string>
+
+
+    <string name="info_tab_display_name">Info</string>
+    <string name="assignment_pets_tab_display_name">Assigned pets</string>
+    <string name="walker_info_tab_display_name">Walker info</string>
+    <string name="channel_tab_display_name">Channel</string>
+    <string name="reviews_tab_display_name">Reviews</string>
+    <string name="assignments_history_tab_display_name">Assignments history</string>
+    <string name="complaints_tab_display_name">Complaints</string>
+
+    <string name="assignment_stats_label">Assignments statistics</string>
+    <string name="assignment_stats_amount_display_name">Amount</string>
+    <string name="assignment_stats_income_display_name">Income</string>
+    <string name="assignment_stats_avgincome_display_name">Average income</string>
+
+    <string name="images_tab_display_name">Images</string>
+    <string name="attachments_tab_display_name">Attachments</string>
+
+    <string name="boarding_service_display_name">Boarding</string>
+    <string name="walking_service_display_name">Walking</string>
+    <string name="drop_In_service_display_name">Drop In</string>
+    <string name="house_Sitting_service_display_name">House Sitting</string>
+    <string name="other_service_display_name">Other</string>
+
+    <string name="desired_payment_card_display_name">Card</string>
+    <string name="desired_payment_cash_display_name">Cash</string>
+    <string name="desired_payment_default_display_name">No preferences</string>
+
+
+    <string name="boarding_service_default_description">Provides comfortable and safe environment for your pets to stay for a while</string>
+    <string name="walking_service_default_description">Provides exercise and care for your pets when you are unable to, due to work, travel, or other commitments</string>
+    <string name="drop_In_service_default_description">Get periodically provided professional pet care services in domestic environment, when you`re out for a long period</string>
+    <string name="house_Sitting_service_default_description">Get one-time professional pet care services in your own house, when you`re out for a while</string>
+    <string name="other_service_default_description">No info about service. Please contact to walker to know the details</string>
+
+    <string name="low_security_display_name">InSecured</string>
+    <string name="middle_security_display_name">Secured enough</string>
+    <string name="high_security_display_name">Well Secured</string>
+
+    <string name="low_security_description">Well, you shall think about possibilities this app gives you to save your account. For example, link it with your email.</string>
+    <string name="middle_security_description">Your account is secured enough according to the possibilities of this app. However, think about updating passwords more frequently.</string>
+    <string name="high_security_description">Your account is well secured according to the possibilities of this app. There is nothing you can do for now.</string>
+
+    <string name="security_label">Security</string>
+    <string name="show_statistics">Statistics</string>
+    <string name="edit_info_label">Edit info</string>
+    <string name="exit_account_label">Exit account</string>
+    <string name="delete_account_label">Delete account</string>
+
+    <string name="owner_option_display_name">Owner</string>
+
+    <string name="all_option_display_name">All</string>
+    <string name="last_year_option_display_name">Last year</string>
+    <string name="last_month_option_display_name">Last month</string>
+    <string name="last_week_option_display_name">Last week</string>
+    <string name="today_option_display_name">Today</string>
+
+    <string name="searching_state_display_name">Searching</string>
+    <string name="in_progress_state_display_name">In progress</string>
+    <string name="booked_state_display_name">Booked</string>
+    <string name="completed_state_display_name">Completed</string>
+
+    <string name="discussion_type_display_name">Display name</string>
+    <string name="video_type_display_name">Video</string>
+    <string name="story_type_display_name">Story</string>
+    <string name="advice_help_type_display_name">Advice/Help</string>
+
+    <string name="vaccination_info_display_name">Vaccination</string>
+    <string name="allergy_info_display_name">Allergy</string>
+    <string name="meds_info_display_name">Meds</string>
+
+    <string name="date_ordering_display_name">Date</string>
+    <string name="live_lines_ordering_display_name">Live lines</string>
+    <string name="thumbs_ordering_display_name">Thumbs</string>
+    <string name="popularity_ordering_display_name">Popularity</string>
+
+    <string name="time_ordering_display_name">Time</string>
+</resources>
