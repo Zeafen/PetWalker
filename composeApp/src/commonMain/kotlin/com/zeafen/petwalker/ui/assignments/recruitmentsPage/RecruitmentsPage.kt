@@ -178,6 +178,8 @@ fun RecruitmentsPage(
                 state = pagerState,
             ) { page ->
                 PullToRefreshBox(
+                    modifier = Modifier
+                        .padding(4.dp),
                     isRefreshing = if (page == 0)
                         state.incomingRecruitments is APIResult.Downloading
                     else state.outcomingRecruitments is APIResult.Downloading,
@@ -203,7 +205,10 @@ fun RecruitmentsPage(
                         onDeleteRecruitment = { id ->
                             selectedRecId = id
                             openConfirmDeleteDialog = true
-                        }
+                        },
+                        lastSelectedPage = if (page == 0)
+                            state.lastSelectedIncomingPage
+                        else state.lastSelectedOutcomingPage
                     )
                 }
             }
@@ -263,6 +268,7 @@ fun RecruitmentsList(
     modifier: Modifier = Modifier,
     recruitments: APIResult<PagedResult<RecruitmentModel>, Error>,
     onLoadPage: (page: Int) -> Unit,
+    lastSelectedPage: Int,
     onSeeWalkerClick: (String) -> Unit,
     onSeeAssignmentClick: (String) -> Unit,
     onAcceptClick: (String) -> Unit,
@@ -285,7 +291,7 @@ fun RecruitmentsList(
                 errorInfo = "${
                     stringResource(recruitments.info.infoResource())
                 }: ${recruitments.additionalInfo}",
-                onReloadPage = { onLoadPage(0) }
+                onReloadPage = { onLoadPage(lastSelectedPage) }
             )
 
             is APIResult.Succeed -> {

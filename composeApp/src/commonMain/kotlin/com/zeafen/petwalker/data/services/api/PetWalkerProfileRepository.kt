@@ -228,11 +228,17 @@ class PetWalkerProfileRepository(
                         append("image", func(), Headers.build {
                             this.append(
                                 HttpHeaders.ContentDisposition,
-                                "filename=${imageFile.displayName}"
+                                "filename=${
+                                    imageFile.displayName.filter { ch ->
+                                        Regex("[A-Za-z.0-9]").matches(
+                                            ch.toString()
+                                        )
+                                    }
+                                }"
                             )
                             this.append(
                                 HttpHeaders.ContentType,
-                                ContentType.Application.OctetStream
+                                imageFile.mediaType
                             )
                         })
                     }

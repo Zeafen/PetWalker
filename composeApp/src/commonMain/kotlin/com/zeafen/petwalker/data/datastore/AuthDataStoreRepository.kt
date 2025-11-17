@@ -35,7 +35,7 @@ class AuthDataStoreRepositoryImpl(
 
     override suspend fun updateUserToken(newToken: TokenResponse?) {
         dataStore.edit {
-            if (newToken == null) {
+            if (newToken == null || newToken.accessToken.isBlank()) {
                 it.minusAssign(ACCESS_TOKEN_NAME_KEY)
                 it.minusAssign(REFRESH_TOKEN_NAME_KEY)
             } else {
@@ -78,12 +78,12 @@ class AuthDataStoreRepositoryImpl(
 
     override suspend fun clearData() {
         dataStore.edit {
-            it.minusAssign(FIRST_NAME_KEY)
-            it.minusAssign(LAST_NAME_KEY)
-            it.minusAssign(ACCESS_TOKEN_NAME_KEY)
-            it.minusAssign(REFRESH_TOKEN_NAME_KEY)
-            it.minusAssign(EMAIL_NAME_KEY)
-            it.minusAssign(IMAGE_URL_NAME_KEY)
+            it.remove(FIRST_NAME_KEY)
+            it.remove(LAST_NAME_KEY)
+            it.remove(ACCESS_TOKEN_NAME_KEY)
+            it.remove(REFRESH_TOKEN_NAME_KEY)
+            it.remove(EMAIL_NAME_KEY)
+            it.remove(IMAGE_URL_NAME_KEY)
         }
     }
 

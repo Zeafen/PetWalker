@@ -116,6 +116,7 @@ import petwalker.composeapp.generated.resources.ic_success
 import petwalker.composeapp.generated.resources.img
 import petwalker.composeapp.generated.resources.loading_label
 import petwalker.composeapp.generated.resources.map_screen_header
+import petwalker.composeapp.generated.resources.pick_location_btn_text
 import petwalker.composeapp.generated.resources.success_label
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -498,7 +499,7 @@ fun PetWalkerMap(
                         PetWalkerButton(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            text = stringResource(Res.string.map_screen_header),
+                            text = stringResource(Res.string.pick_location_btn_text),
                             onClick = {
                                 mapState.getMarkerInfo("pick_location")?.let { info ->
                                     val location = getDegreesCoordinatesFromMercator(

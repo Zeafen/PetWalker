@@ -11,7 +11,7 @@ import petwalker.composeapp.generated.resources.empty_fields_error_txt
 
 data class ComplaintConfigureUiState(
     val selectedComplaintId: String? = null,
-    val complaintLoadingResult: APIResult<Unit, Error> = APIResult.Downloading(),
+    val complaintLoadingResult: APIResult<Unit, Error>? = null,
 
     val reviewedWalkerId: String = "",
     val reviewedWalkerName: String = "",

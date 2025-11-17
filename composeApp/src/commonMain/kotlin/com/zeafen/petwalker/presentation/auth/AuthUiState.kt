@@ -12,7 +12,7 @@ data class AuthUiState(
     val email: String = "",
     val phone: String = "",
     val passwordValid: ValidationInfo = ValidationInfo(true, null, emptyList()),
-    val passwordsMatch: Boolean = true,
+    val passwordsMatch: Boolean = false,
     val emailValid: ValidationInfo = ValidationInfo(true, null, emptyList()),
     val phoneValid: ValidationInfo = ValidationInfo(true, null, emptyList()),
     val canSignIn: Boolean = false,

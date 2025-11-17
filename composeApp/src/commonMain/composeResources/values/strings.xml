@@ -68,7 +68,7 @@
     <string name="closed_label">Closed</string>
     <string name="opened_channel_label">Live</string>
     <string name="species_label">Species</string>
-    <string name="breed_label">Species</string>
+    <string name="breed_label">Breed</string>
     <string name="age_label">Age</string>
     <string name="weight_label">Weight</string>
     <string name="medical_info_label">Medical info</string>
@@ -84,7 +84,10 @@
     <string name="are_sure_label">Are you sure?</string>
     <string name="confirm_delete_account_label">Confirm to delete account?</string>
     <string name="confirm_change_status_label">Confirm to change status to %1$s</string>
-    <string name="confirm_delete_assignment_label">Confirm to delete assignment</string>
+    <string name="confirm_delete_assignment_label">Confirm to delete assignment?</string>
+    <string name="confirm_delete_review_label">Confirm to delete review?</string>
+    <string name="confirm_delete_complaint_label">Confirm to delete complaint?</string>
+    <string name="confirm_delete_message_label">Confirm to delete message?</string>
     <string name="confirm_delete_pet_label">Confirm to delete pet</string>
     <string name="confirm_delete_recruitment_label">Confirm to delete recruitment</string>
     <string name="confirm_logout_text_label">Confirm to log out?</string>
@@ -152,7 +155,7 @@
 
     <string name="sign_up_link_txt">Don`t have an account?</string>
     <string name="sign_in_link_txt">Already have an account?</string>
-    <string name="back_to_login_link_txt">Back to sign in</string>
+    <string name="back_link_txt">Back</string>
 
 
     <!--Error info -->
@@ -165,7 +168,7 @@
     <string name="unauthorized_error_txt">Unauthorized</string>
     <string name="nan_error_txt">Not a number</string>
     <string name="incorrect_length_least_error">Value length must be at least %1$d</string>
-    <string name="length_max_error">Value length must have maximum %1$d symbols length</string>
+    <string name="incorrect_length_max_error">Value length must have maximum %1$d symbols length</string>
     <string name="login_taken_error_txt">Login is already taken</string>
     <string name="must_contain_least_numbers_error">Value must contain at least %1$d numbers</string>
     <string name="must_contain_least_letters_error">Value must contain at least %1$d letters</string>

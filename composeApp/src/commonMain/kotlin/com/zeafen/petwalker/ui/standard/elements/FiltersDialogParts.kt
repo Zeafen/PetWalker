@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
@@ -45,16 +46,25 @@ fun PetWalkerDialogHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         PetWalkerChip(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 4.dp),
             label = stringResource(Res.string.clear_btn_txt),
             onClick = onClearFiltersClick,
             containerColor = MaterialTheme.colorScheme.errorContainer
         )
         Text(
-            title,
+            modifier = Modifier
+                .weight(2f)
+                .padding(horizontal = 4.dp),
+            text = title,
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         PetWalkerChip(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 4.dp),
             label = stringResource(Res.string.done_btn_txt),
             onClick = onDoneFiltersClick,
             containerColor = MaterialTheme.colorScheme.primary

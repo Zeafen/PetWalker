@@ -1,6 +1,7 @@
 package com.zeafen.petwalker.ui.reviews
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,8 +30,11 @@ import com.zeafen.petwalker.ui.standard.elements.RatingRow
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
+import petwalker.composeapp.generated.resources.ic_delete
+import petwalker.composeapp.generated.resources.ic_edit
 import petwalker.composeapp.generated.resources.see_assignment_btn_txt
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -38,7 +44,9 @@ import kotlin.time.Instant
 fun ReviewCard(
     modifier: Modifier = Modifier,
     review: ReviewCardModel,
-    onGoToAssignmentClick: (String) -> Unit
+    onGoToAssignmentClick: (String) -> Unit,
+    onEditReviewClick: (() -> Unit)? = null,
+    onDeleteReviewClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier,
@@ -51,6 +59,37 @@ fun ReviewCard(
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         ),
     ) {
+        if (review.isOwn) {
+            FlowRow(
+                modifier = Modifier
+                    .padding(
+                        horizontal = 8.dp,
+                        vertical = 12.dp
+                    )
+            ) {
+                onEditReviewClick?.let {
+                    IconButton(
+                        onClick = it
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_edit),
+                            contentDescription = "Edit"
+                        )
+                    }
+                }
+                onDeleteReviewClick?.let {
+                    IconButton(
+                        onClick = it
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.ic_delete),
+                            contentDescription = "Delete"
+                        )
+                    }
+                }
+            }
+        }
+
         ReviewCellHeader(
             modifier = Modifier
                 .padding(vertical = 4.dp, horizontal = 8.dp),

@@ -10,6 +10,7 @@ sealed interface AssignmentConfigureUiEvent {
 
     data class SetAssignmentTitle(val title: String) : AssignmentConfigureUiEvent
     data class SetAssignmentDate(val date: LocalDateTime?) : AssignmentConfigureUiEvent
+    data class SetAssignmentTime(val hour: Int, val minute: Int) : AssignmentConfigureUiEvent
     data class SetAssignmentType(val type: ServiceType?) : AssignmentConfigureUiEvent
     data class SetAssignmentDescription(val description: String) : AssignmentConfigureUiEvent
 
@@ -20,4 +21,5 @@ sealed interface AssignmentConfigureUiEvent {
 
     data object ApplyChanges : AssignmentConfigureUiEvent
     data object DeleteAssignment : AssignmentConfigureUiEvent
+    data object ClearResult : AssignmentConfigureUiEvent
 }

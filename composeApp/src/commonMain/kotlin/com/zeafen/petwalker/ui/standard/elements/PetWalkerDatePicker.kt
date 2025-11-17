@@ -26,7 +26,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
-fun PetWalkerDateBicker(
+fun PetWalkerDatePicker(
     modifier: Modifier = Modifier,
     currentDate: LocalDateTime? = null,
     onDateChanged: (LocalDateTime?) -> Unit,
@@ -46,7 +46,6 @@ fun PetWalkerDateBicker(
                 )
             }
         )
-
     }
     Column(modifier = modifier) {
         DatePicker(

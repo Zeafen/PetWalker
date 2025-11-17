@@ -90,7 +90,7 @@ class AssignmentDetailsViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(assignment = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -110,14 +110,18 @@ class AssignmentDetailsViewModel(
                     val canRecruit = async {
                         if (assignment is APIResult.Error) null
                         else {
-                            val res = assignmentsRepository.canRecruitToAssignment((assignment as APIResult.Succeed).data!!.id)
-                            if(res is APIResult.Succeed)
+                            val res =
+                                assignmentsRepository.canRecruitToAssignment((assignment as APIResult.Succeed).data!!.id)
+                            if (res is APIResult.Succeed)
                                 res.data
                             else null
                         }
                     }
-                    val distance = location
-                        ?.calculateDistance((assignment as APIResult.Succeed).data!!.location)
+
+                    val distance =
+                        if (assignment is APIResult.Succeed)
+                            location?.calculateDistance(assignment.data!!.location)
+                        else null
 
                     _state.update {
                         it.copy(
@@ -149,7 +153,7 @@ class AssignmentDetailsViewModel(
                             }
 
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
                                     it.copy(assignmentChannel = APIResult.Error(NetworkError.UNAUTHORIZED))
                                 }
@@ -178,7 +182,7 @@ class AssignmentDetailsViewModel(
 
                 AssignmentDetailsUiEvent.LoadOwner -> {
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(assignmentOwner = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -214,7 +218,7 @@ class AssignmentDetailsViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(assignmentPets = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }
@@ -249,7 +253,7 @@ class AssignmentDetailsViewModel(
                     if (walkerInfoLoadingJob?.isActive != true)
                         walkerInfoLoadingJob = launch {
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
                                     it.copy(assignmentWalker = APIResult.Error(NetworkError.UNAUTHORIZED))
                                 }
@@ -337,7 +341,7 @@ class AssignmentDetailsViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(recruitingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -369,7 +373,7 @@ class AssignmentDetailsViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(assignment = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }
@@ -385,6 +389,11 @@ class AssignmentDetailsViewModel(
                         }
 
                         val result = when (event.status) {
+                            AssignmentState.Searching -> assignmentsRepository
+                                .searchAssignment(
+                                    selectedId
+                                )
+
                             AssignmentState.In_Progress -> assignmentsRepository
                                 .startAssignment(
                                     selectedId

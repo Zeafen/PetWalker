@@ -45,10 +45,15 @@ import com.zeafen.petwalker.presentation.walkers.walkerDetails.WalkerDetailsPage
 import com.zeafen.petwalker.presentation.walkers.walkerDetails.WalkerDetailsPageUiEvent
 import com.zeafen.petwalker.presentation.walkers.walkerDetails.WalkerDetailsPageUiState
 import com.zeafen.petwalker.ui.standard.elements.ErrorInfoHint
+import com.zeafen.petwalker.ui.standard.elements.PetWalkerAlertDialog
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
+import petwalker.composeapp.generated.resources.are_sure_label
+import petwalker.composeapp.generated.resources.confirm_delete_assignment_label
+import petwalker.composeapp.generated.resources.confirm_delete_complaint_label
+import petwalker.composeapp.generated.resources.confirm_delete_review_label
 import petwalker.composeapp.generated.resources.ic_go_back
 import petwalker.composeapp.generated.resources.loading_label
 import petwalker.composeapp.generated.resources.success_label
@@ -62,11 +67,21 @@ fun WalkerDetailsPage(
     onEvent: (WalkerDetailsPageUiEvent) -> Unit,
     onBackClick: () -> Unit,
     onGoToAssignmentClick: (String) -> Unit,
-    onAddComplaintClick: () -> Unit
+    onAddComplaintClick: () -> Unit,
+    onEditComplaintClick: (String) -> Unit,
+    onEditReviewClick: (id: String, assignmentId: String) -> Unit
 ) {
     var openRecruitingDialog by rememberSaveable {
         mutableStateOf(false)
     }
+
+    var selectedComplaintIdToDelete by remember {
+        mutableStateOf<String?>(null)
+    }
+    var selectedReviewToDelete by remember {
+        mutableStateOf<String?>(null)
+    }
+
     val pagerState = rememberPagerState {
         WalkerDetailsPageTabs.entries.size
     }
@@ -160,6 +175,8 @@ fun WalkerDetailsPage(
                 when (WalkerDetailsPageTabs.entries[index]) {
                     WalkerDetailsPageTabs.Info -> {
                         PullToRefreshBox(
+                            modifier = Modifier
+                                .padding(4.dp),
                             isRefreshing = state.walker is APIResult.Downloading,
                             onRefresh = {
                                 state.selectedWalkerId?.let {
@@ -207,6 +224,8 @@ fun WalkerDetailsPage(
 
                     WalkerDetailsPageTabs.Reviews -> {
                         PullToRefreshBox(
+                            modifier = Modifier
+                                .padding(4.dp),
                             isRefreshing = state.walkerReviews is APIResult.Downloading,
                             onRefresh = {
                                 onEvent(WalkerDetailsPageUiEvent.LoadWalkerReviews(state.selectedReviewsPage))
@@ -215,14 +234,18 @@ fun WalkerDetailsPage(
                             WalkerReviewsTab(
                                 state = state,
                                 onGoToAssignmentClick = onGoToAssignmentClick,
-                                onEvent = onEvent
+                                onEvent = onEvent,
+                                onDeleteReviewClick = { selectedReviewToDelete = null },
+                                onEditReviewClick = onEditReviewClick
                             )
                         }
                     }
 
                     WalkerDetailsPageTabs.Complaints -> {
                         PullToRefreshBox(
-                            isRefreshing = state.walkerComplaintsStats is APIResult.Downloading,
+                            modifier = Modifier
+                                .padding(4.dp),
+                            isRefreshing = state.walkerComplaintsStats is APIResult.Downloading || state.walkerComplaints is APIResult.Downloading,
                             onRefresh = {
                                 onEvent(WalkerDetailsPageUiEvent.LoadWalkerComplaints(state.selectedComplaintsPage))
                             }
@@ -231,13 +254,17 @@ fun WalkerDetailsPage(
                                 state = state,
                                 onEvent = onEvent,
                                 onGoToAssignmentClick = onGoToAssignmentClick,
-                                onAddComplaintClick = onAddComplaintClick
+                                onAddComplaintClick = onAddComplaintClick,
+                                onDeleteComplaintClick = { selectedComplaintIdToDelete = it },
+                                onEditComplaintClick = onEditComplaintClick
                             )
                         }
                     }
 
                     WalkerDetailsPageTabs.AssignmentsHistory -> {
                         PullToRefreshBox(
+                            modifier = Modifier
+                                .padding(4.dp),
                             isRefreshing = state.walkerAssignments is APIResult.Downloading,
                             onRefresh = {
                                 onEvent(WalkerDetailsPageUiEvent.LoadWalkerAssignment(state.selectedAssignmentsPage))
@@ -268,7 +295,7 @@ fun WalkerDetailsPage(
                         openRecruitingDialog = false
                     }
                 )
-            if(popupContent != null)
+            if (popupContent != null)
                 Popup(
                     alignment = Alignment.BottomCenter,
                     onDismissRequest = { popupContent = null }
@@ -278,6 +305,34 @@ fun WalkerDetailsPage(
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
+            if (selectedComplaintIdToDelete != null)
+                PetWalkerAlertDialog(
+                    title = stringResource(Res.string.are_sure_label),
+                    text = stringResource(Res.string.confirm_delete_complaint_label),
+                    onConfirm = {
+                        onEvent(
+                            WalkerDetailsPageUiEvent.DeleteWalkerComplaint(
+                                selectedComplaintIdToDelete!!
+                            )
+                        )
+                        selectedComplaintIdToDelete = null
+                    },
+                    onDismissRequest = { selectedComplaintIdToDelete = null }
+                )
+            if (selectedReviewToDelete != null)
+                PetWalkerAlertDialog(
+                    title = stringResource(Res.string.are_sure_label),
+                    text = stringResource(Res.string.confirm_delete_review_label),
+                    onConfirm = {
+                        onEvent(
+                            WalkerDetailsPageUiEvent.DeleteWalkerReview(
+                                selectedReviewToDelete!!
+                            )
+                        )
+                        selectedReviewToDelete = null
+                    },
+                    onDismissRequest = { selectedReviewToDelete = null }
+                )
         }
     }
 }

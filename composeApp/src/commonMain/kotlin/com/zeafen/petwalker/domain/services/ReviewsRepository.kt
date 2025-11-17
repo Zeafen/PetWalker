@@ -17,10 +17,10 @@ interface ReviewsRepository {
     /***
      * Get a certain review for the specified identifier
      * @return Review entity if request succeeded, otherwise - Error info
-     * @param reviewId Review identifier
+     * @param id Review or reviewed assignment identifier identifier
      */
     suspend fun getReviewById(
-        reviewId: String,
+        id: String,
     ): APIResult<Review, com.zeafen.petwalker.domain.models.api.util.Error>
 
 

@@ -39,6 +39,7 @@ class AssignmentsViewModel(
     init {
         locationService.startObserving()
     }
+
     override fun onCleared() {
         locationService.cancelObserving()
         super.onCleared()
@@ -71,14 +72,12 @@ class AssignmentsViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             return@launch
                         }
 
-
-                        var location =
+                        val location =
                             locationService.location.first()
-
 
                         val assignments = if (!state.value.loadOwn) {
                             assignmentsRepository.getAssignments(

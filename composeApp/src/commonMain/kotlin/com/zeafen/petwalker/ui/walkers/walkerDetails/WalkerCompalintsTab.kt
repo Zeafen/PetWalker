@@ -50,9 +50,9 @@ import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.active_count_txt
 import petwalker.composeapp.generated.resources.complaints_count_txt
+import petwalker.composeapp.generated.resources.complaints_tab_display_name
 import petwalker.composeapp.generated.resources.ic_add
 import petwalker.composeapp.generated.resources.ic_filter
-import petwalker.composeapp.generated.resources.reviews_tab_display_name
 import petwalker.composeapp.generated.resources.solved_count_txt
 
 @Composable
@@ -61,95 +61,109 @@ fun WalkerComplaintsTab(
     state: WalkerDetailsPageUiState,
     onEvent: (WalkerDetailsPageUiEvent) -> Unit,
     onGoToAssignmentClick: (String) -> Unit,
-    onAddComplaintClick: () -> Unit
+    onAddComplaintClick: () -> Unit,
+    onDeleteComplaintClick: (String) -> Unit,
+    onEditComplaintClick: (String) -> Unit
 ) {
     var openFiltersDialog by remember {
         mutableStateOf(false)
     }
-    when (state.walkerComplaintsStats) {
-        is APIResult.Downloading -> CircularProgressIndicator(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentWidth()
-                .fillMaxWidth(0.5f)
-                .fillMaxHeight(0.3f),
-            strokeWidth = 4.dp
-        )
 
-        is APIResult.Error ->
-            ErrorInfoHint(
+    Column(modifier = modifier) {
+        when (state.walkerComplaintsStats) {
+            is APIResult.Downloading -> CircularProgressIndicator(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                errorInfo = "${
-                    stringResource(state.walkerComplaintsStats.info.infoResource())
-                }: ${state.walkerComplaintsStats.additionalInfo}",
-                onReloadPage = { onEvent(WalkerDetailsPageUiEvent.LoadWalkerReviews()) }
-            )
-
-        is APIResult.Succeed -> {
-            ComplaintsStatisticsSheet(
-                modifier = modifier
                     .fillMaxWidth()
                     .wrapContentWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .padding(horizontal = 8.dp, vertical = 12.dp),
-                complaintsStats = state.walkerComplaintsStats.data!!
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(0.3f),
+                strokeWidth = 4.dp
             )
-            Spacer(Modifier.height(24.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                FilledIconButton(
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    ),
-                    onClick = { openFiltersDialog = true }) {
-                    Icon(
-                        modifier = Modifier
-                            .size(32.dp),
-                        painter = painterResource(Res.drawable.ic_filter),
-                        contentDescription = "Filters"
-                    )
-                }
-                PetWalkerButton(
-                    text = stringResource(Res.string.reviews_tab_display_name),
-                    trailingIcon = painterResource(Res.drawable.ic_add),
-                    onClick = onAddComplaintClick
+
+            is APIResult.Error ->
+                ErrorInfoHint(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    errorInfo = "${
+                        stringResource(state.walkerComplaintsStats.info.infoResource())
+                    }: ${state.walkerComplaintsStats.additionalInfo}",
+                    onReloadPage = { onEvent(WalkerDetailsPageUiEvent.LoadWalkerComplaintsStats) }
+                )
+
+            is APIResult.Succeed -> {
+                ComplaintsStatisticsSheet(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(horizontal = 8.dp, vertical = 12.dp),
+                    complaintsStats = state.walkerComplaintsStats.data!!
                 )
             }
         }
-    }
 
-    HorizontalDivider(
-        modifier = Modifier
-            .padding(vertical = 16.dp),
-        thickness = 4.dp
-    )
-    ComplaintsList(
-        complaints = state.walkerComplaints,
-        onGoToAssignmentClick = onGoToAssignmentClick,
-        onLoadPage = { onEvent(WalkerDetailsPageUiEvent.LoadWalkerComplaints()) }
-    )
-    if (openFiltersDialog)
-        ComplaintFilteringDialog(
-            onDismissRequest = { openFiltersDialog = false },
-            onDoneClick = { topic, status, period ->
-                onEvent(WalkerDetailsPageUiEvent.SetWalkerComplaintsFilters(topic, status, period))
-            },
-            onClearClick = {
-                onEvent(
-                    WalkerDetailsPageUiEvent.SetWalkerComplaintsFilters(
-                        null,
-                        null,
-                        null
-                    )
+        Spacer(Modifier.height(24.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilledIconButton(
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                ),
+                onClick = { openFiltersDialog = true }) {
+                Icon(
+                    modifier = Modifier
+                        .size(32.dp),
+                    painter = painterResource(Res.drawable.ic_filter),
+                    contentDescription = "Filters"
                 )
             }
+            PetWalkerButton(
+                text = stringResource(Res.string.complaints_tab_display_name),
+                trailingIcon = painterResource(Res.drawable.ic_add),
+                onClick = onAddComplaintClick
+            )
+        }
+
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(vertical = 16.dp),
+            thickness = 4.dp
         )
+        ComplaintsList(
+            complaints = state.walkerComplaints,
+            onGoToAssignmentClick = onGoToAssignmentClick,
+            onLoadPage = { onEvent(WalkerDetailsPageUiEvent.LoadWalkerComplaints(state.selectedComplaintsPage)) },
+            onDeleteComplaintClick = onDeleteComplaintClick,
+            onEditComplaintClick = onEditComplaintClick
+        )
+        if (openFiltersDialog)
+            ComplaintFilteringDialog(
+                onDismissRequest = { openFiltersDialog = false },
+                onDoneClick = { topic, status, period ->
+                    onEvent(
+                        WalkerDetailsPageUiEvent.SetWalkerComplaintsFilters(
+                            topic,
+                            status,
+                            period
+                        )
+                    )
+                },
+                onClearClick = {
+                    onEvent(
+                        WalkerDetailsPageUiEvent.SetWalkerComplaintsFilters(
+                            null,
+                            null,
+                            null
+                        )
+                    )
+                }
+            )
+    }
 }
 
 @Composable
@@ -157,7 +171,9 @@ fun ComplaintsList(
     modifier: Modifier = Modifier,
     complaints: APIResult<PagedResult<ComplaintModel>, Error>,
     onLoadPage: (Int) -> Unit,
-    onGoToAssignmentClick: (String) -> Unit
+    onGoToAssignmentClick: (String) -> Unit,
+    onDeleteComplaintClick: (String) -> Unit,
+    onEditComplaintClick: (String) -> Unit,
 ) {
     when (complaints) {
         is APIResult.Downloading -> CircularProgressIndicator(
@@ -187,6 +203,8 @@ fun ComplaintsList(
                     ComplaintCard(
                         complaint = complaint,
                         onSeeAssignmentClick = onGoToAssignmentClick,
+                        onEditComplaintClick = { onEditComplaintClick(complaint.id) },
+                        onDeleteComplaintClick = { onDeleteComplaintClick(complaint.id) },
                     )
                 }
                 item(span = StaggeredGridItemSpan.FullLine) {

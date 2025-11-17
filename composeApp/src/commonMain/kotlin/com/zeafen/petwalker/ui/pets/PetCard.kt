@@ -3,7 +3,6 @@ package com.zeafen.petwalker.ui.pets
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -17,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.zeafen.petwalker.data.helpers.format
 import com.zeafen.petwalker.domain.models.api.pets.Pet
 import com.zeafen.petwalker.ui.standard.elements.HintWithIcon
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAsyncImage
@@ -27,7 +25,6 @@ import kotlinx.datetime.format.char
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
-import petwalker.composeapp.generated.resources.age_years_txt
 import petwalker.composeapp.generated.resources.born_at_txt
 import petwalker.composeapp.generated.resources.ic_app
 import petwalker.composeapp.generated.resources.ic_calendar
@@ -77,17 +74,15 @@ fun PetCard(
                     Res.string.born_at_txt,
                     pet.date_birth.format(
                         LocalDateTime.Format {
-                            LocalDateTime.Format {
-                                day()
-                                char('/')
-                                monthNumber()
-                                char('/')
-                                year()
-                                char(' ')
-                                hour()
-                                char(':')
-                                minute()
-                            }
+                            day()
+                            char('/')
+                            monthNumber()
+                            char('/')
+                            year()
+                            char(' ')
+                            hour()
+                            char(':')
+                            minute()
                         }
                     )
                 ),
@@ -143,18 +138,17 @@ fun PetCard(
                     Res.string.born_at_txt,
                     pet.date_birth.format(
                         LocalDateTime.Format {
-                            LocalDateTime.Format {
-                                day()
-                                char('/')
-                                monthNumber()
-                                char('/')
-                                year()
-                                char(' ')
-                                hour()
-                                char(':')
-                                minute()
-                            }
+                            day()
+                            char('/')
+                            monthNumber()
+                            char('/')
+                            year()
+                            char(' ')
+                            hour()
+                            char(':')
+                            minute()
                         }
+
                     )
                 ),
                 leadingIcon = painterResource(Res.drawable.ic_calendar),

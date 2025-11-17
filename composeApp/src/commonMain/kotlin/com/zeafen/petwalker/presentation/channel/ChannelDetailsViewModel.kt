@@ -7,6 +7,7 @@ import com.zeafen.petwalker.domain.models.ValidationInfo
 import com.zeafen.petwalker.domain.models.api.other.Attachment
 import com.zeafen.petwalker.domain.models.api.other.AttachmentType
 import com.zeafen.petwalker.domain.models.api.util.APIResult
+import com.zeafen.petwalker.domain.models.api.util.IOError
 import com.zeafen.petwalker.domain.models.api.util.NetworkError
 import com.zeafen.petwalker.domain.services.AuthDataStoreRepository
 import com.zeafen.petwalker.domain.services.ChannelsRepository
@@ -33,7 +34,7 @@ import kotlin.uuid.Uuid
 class ChannelDetailsViewModel(
     private val channelsRepository: ChannelsRepository,
     private val authDataStore: AuthDataStoreRepository,
-    private val downloadManager: PetWalkerDownloadManager
+    private val downloadManager: PetWalkerDownloadManager?
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<ChannelDetailsUiState> =
@@ -118,7 +119,8 @@ class ChannelDetailsViewModel(
                     _state.update {
                         it.copy(
                             fileLoadingError =
-                                downloadManager.queryDownload(event.ref, event.name)
+                                downloadManager?.queryDownload(event.ref, event.name)
+                                    ?: IOError.UNKNOWN
                         )
                     }
                 }
@@ -132,7 +134,7 @@ class ChannelDetailsViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(channel = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -172,18 +174,18 @@ class ChannelDetailsViewModel(
                         }
                         _state.update {
                             it.copy(
-                                isMessagesLoading = true,
+                                areMessagesLoading = true,
                                 isLoadingDownwards = it.currentMessagesPageComb.second == currentComb.first,
                                 messagesLoadingError = null
                             )
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     messagesLoadingError = NetworkError.UNAUTHORIZED,
-                                    isMessagesLoading = false
+                                    areMessagesLoading = false
                                 )
                             }
                         }
@@ -193,21 +195,40 @@ class ChannelDetailsViewModel(
                             _state.update {
                                 it.copy(
                                     messagesLoadingError = NetworkError.NOT_FOUND,
-                                    isMessagesLoading = false
+                                    areMessagesLoading = false
                                 )
                             }
                             return@launch
                         }
 
-                        val messages = channelsRepository.getChannelMessages(
-                            selectedChannelId!!,
-                            event.page,
-                            15
-                        )
+                        //loading messages
+                        val messages = when {
+                            currentComb.second == state.value.currentMessagesPageComb.first ->
+                                channelsRepository.getChannelMessages(
+                                    selectedChannelId,
+                                    currentComb.first,
+                                    15
+                                )
+
+                            currentComb.first == state.value.currentMessagesPageComb.second ->
+                                channelsRepository.getChannelMessages(
+                                    selectedChannelId,
+                                    currentComb.second,
+                                    15
+                                )
+
+                            else -> channelsRepository.getChannelMessages(
+                                selectedChannelId,
+                                event.page.coerceAtLeast(1),
+                                15
+                            )
+                        }
+
+                        //updating state
                         if (messages is APIResult.Error) {
                             _state.update {
                                 it.copy(
-                                    isMessagesLoading = false,
+                                    areMessagesLoading = false,
                                     messagesLoadingError = messages.info
                                 )
                             }
@@ -215,21 +236,24 @@ class ChannelDetailsViewModel(
                         } else if (messages is APIResult.Succeed) {
                             val maxPages = messages.data!!.totalPages
                             val newMessages = when {
-                                currentComb.second == state.value.currentMessagesPageComb.first ->
+                                currentComb.second == state.value.currentMessagesPageComb.first
+                                        && currentComb.first != state.value.currentMessagesPageComb.second ->
                                     messages.data.result + state.value.messages.take(15)
 
-                                currentComb.first == state.value.currentMessagesPageComb.second ->
+                                currentComb.first == state.value.currentMessagesPageComb.second
+                                        && currentComb.second != state.value.currentMessagesPageComb.first ->
                                     state.value.messages.takeLast(15) + messages.data.result
 
                                 else -> messages.data.result
                             }
+                                .distinctBy { it.id }
 
                             _state.update {
                                 it.copy(
                                     currentMessagesPageComb = currentComb,
                                     messages = newMessages,
                                     isLoadingDownwards = false,
-                                    isMessagesLoading = false,
+                                    areMessagesLoading = false,
                                     maxMessagesPages = maxPages
                                 )
                             }
@@ -257,7 +281,7 @@ class ChannelDetailsViewModel(
                                     return@launch
 
                                 val token = authDataStore.authDataStoreFlow.first().token
-                                if (token == null) {
+                                if (token == null || token.accessToken.isBlank()) {
                                     _state.update {
                                         it.copy(
                                             sendingMessageResult = APIResult.Error(NetworkError.NOT_FOUND)
@@ -266,6 +290,7 @@ class ChannelDetailsViewModel(
                                     return@launch
                                 }
 
+                                val selectedMessageId = state.value.selectedMessageId
                                 val selectedChannelId = state.value.selectedChannelId
                                 if (selectedChannelId == null) {
                                     _state.update {
@@ -277,16 +302,39 @@ class ChannelDetailsViewModel(
                                 }
 
 
-                                val result = channelsRepository.postMessage(
-                                    selectedChannelId,
-                                    state.value.messageString,
-                                    state.value.selectedAttachmentFiles.mapNotNull { it.value })
 
-                                _state.update {
-                                    it.copy(
-                                        sendingMessageResult = result
+                                if (selectedMessageId == null) {
+                                    val result = channelsRepository.postMessage(
+                                        selectedChannelId,
+                                        state.value.messageString,
+                                        state.value.selectedAttachmentFiles.mapNotNull { it.value })
+
+                                    _state.update {
+                                        it.copy(
+                                            sendingMessageResult = result,
+                                            messageString = "",
+                                            selectedAttachmentUris = emptyList(),
+                                            selectedAttachmentFiles = emptyMap(),
+                                        )
+                                    }
+                                } else {
+                                    val result = channelsRepository.updateMessage(
+                                        selectedChannelId,
+                                        selectedMessageId,
+                                        state.value.messageString
                                     )
+                                    _state.update {
+                                        it.copy(
+                                            sendingMessageResult = result,
+                                            selectedMessageId = null,
+                                            messageString = "",
+                                            selectedAttachmentFiles = emptyMap(),
+                                            selectedAttachmentUris = emptyList()
+                                        )
+                                    }
                                 }
+
+                                onEvent(ChannelDetailsUiEvent.LoadMessages(state.value.currentMessagesPageComb.first))
                             }
                     }
                 }
@@ -295,6 +343,56 @@ class ChannelDetailsViewModel(
                     inputMutex.withLock {
                         _state.update {
                             it.copy(messageString = event.string)
+                        }
+                    }
+                }
+
+                is ChannelDetailsUiEvent.DeleteMessage -> {
+                    inputMutex.withLock {
+                        if (sendingMessageJob?.isActive != true)
+                            sendingMessageJob = launch {
+                                val token = authDataStore.authDataStoreFlow.first().token
+                                if (token == null || token.accessToken.isBlank()) {
+                                    _state.update {
+                                        it.copy(
+                                            sendingMessageResult = APIResult.Error(NetworkError.NOT_FOUND)
+                                        )
+                                    }
+                                    return@launch
+                                }
+
+                                _state.update {
+                                    it.copy(sendingMessageResult = APIResult.Downloading())
+                                }
+
+                                if (state.value.selectedChannelId == null) {
+                                    _state.update {
+                                        it.copy(sendingMessageResult = APIResult.Error(NetworkError.NOT_FOUND))
+                                    }
+                                }
+
+                                val result = channelsRepository.deleteMessage(
+                                    state.value.selectedChannelId!!,
+                                    event.messageId
+                                )
+                                _state.update {
+                                    it.copy(sendingMessageResult = result)
+                                }
+
+                                onEvent(ChannelDetailsUiEvent.LoadMessages(state.value.currentMessagesPageComb.first))
+                            }
+                    }
+                }
+
+                is ChannelDetailsUiEvent.SetEditedMessage -> {
+                    inputMutex.withLock {
+                        _state.update {
+                            it.copy(
+                                selectedMessageId = event.message?.id,
+                                messageString = event.message?.body ?: "",
+                                selectedAttachmentFiles = emptyMap(),
+                                selectedAttachmentUris = emptyList()
+                            )
                         }
                     }
                 }

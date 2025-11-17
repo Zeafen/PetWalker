@@ -35,4 +35,5 @@ sealed interface PetConfigureUiEvent {
 
     data object PublishData : PetConfigureUiEvent
     data object DeletePet : PetConfigureUiEvent
+    data object ClearResult : PetConfigureUiEvent
 }

@@ -9,4 +9,5 @@ sealed interface ReviewConfigureUiEvent {
     data class SetReviewText(val text: String) : ReviewConfigureUiEvent
 
     data object PublishReview : ReviewConfigureUiEvent
+    data object ClearResult : ReviewConfigureUiEvent
 }

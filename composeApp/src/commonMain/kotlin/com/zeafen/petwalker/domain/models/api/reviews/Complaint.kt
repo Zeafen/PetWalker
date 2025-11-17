@@ -12,6 +12,7 @@ data class Complaint(
     val topic : ComplaintTopic,
     val status : ComplaintStatus,
     val body : String,
+    val isOwn: Boolean,
     val datePosted : LocalDateTime,
     val dateSolved : LocalDateTime?
 )

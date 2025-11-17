@@ -112,11 +112,17 @@ class PetWalkerChannelsRepository(
                             append("attachment$index", func(), Headers.build {
                                 this.append(
                                     HttpHeaders.ContentDisposition,
-                                    "filename=${info.displayName}"
+                                    "filename=${
+                                        info.displayName.filter { ch ->
+                                            Regex("[A-Za-z.0-9]").matches(
+                                                ch.toString()
+                                            )
+                                        }
+                                    }"
                                 )
                                 this.append(
                                     HttpHeaders.ContentType,
-                                    ContentType.Application.OctetStream
+                                    info.mediaType
                                 )
                             })
                         }

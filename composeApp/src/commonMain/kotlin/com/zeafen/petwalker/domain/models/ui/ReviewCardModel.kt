@@ -8,6 +8,7 @@ data class ReviewCardModel(
     val senderFullName: String,
     val assignmentId : String,
     val text : String,
+    val isOwn : Boolean,
     val rating : Int,
     val datePosted : LocalDateTime,
     val dateUpdated : LocalDateTime?

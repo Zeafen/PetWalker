@@ -49,12 +49,15 @@ import com.zeafen.petwalker.domain.models.api.util.APIResult
 import com.zeafen.petwalker.presentation.channel.ChannelDetailsUiEvent
 import com.zeafen.petwalker.presentation.channel.ChannelDetailsUiState
 import com.zeafen.petwalker.ui.standard.elements.ErrorInfoHint
+import com.zeafen.petwalker.ui.standard.elements.PetWalkerAlertDialog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
+import petwalker.composeapp.generated.resources.are_sure_label
 import petwalker.composeapp.generated.resources.channel_tab_display_name
+import petwalker.composeapp.generated.resources.confirm_delete_message_label
 import petwalker.composeapp.generated.resources.ic_arrow_up
 import petwalker.composeapp.generated.resources.ic_go_back
 import petwalker.composeapp.generated.resources.loading_label
@@ -80,6 +83,10 @@ fun ChannelDetailsPage(
     var showGoUp by remember {
         mutableStateOf(false)
     }
+    var selectedMessageId by remember {
+        mutableStateOf<String?>(null)
+    }
+
     var popupContent by remember(state.fileLoadingError) {
         mutableStateOf<StringResource?>(state.fileLoadingError?.infoResource())
     }
@@ -97,7 +104,7 @@ fun ChannelDetailsPage(
             }
     }
 
-    LaunchedEffect(state.sendingMessageResult){
+    LaunchedEffect(state.sendingMessageResult) {
         popupContent = when (state.sendingMessageResult) {
             is APIResult.Downloading -> Res.string.loading_label
             is APIResult.Error<*> -> state.sendingMessageResult.info.infoResource()
@@ -175,7 +182,7 @@ fun ChannelDetailsPage(
                 reverseLayout = true
             ) {
                 when {
-                    state.isMessagesLoading && !state.isLoadingDownwards -> item {
+                    state.areMessagesLoading && !state.isLoadingDownwards -> item {
                         CircularProgressIndicator(
                             Modifier
                                 .size(80.dp)
@@ -196,11 +203,11 @@ fun ChannelDetailsPage(
                     key = { index -> state.messages[index].id }
                 ) { index ->
                     val message = state.messages[index]
-                    if (index >= state.messages.size - 1 && !state.maxMessagesPageReached && !state.isMessagesLoading)
+                    if (index >= state.messages.size - 1 && !state.maxMessagesPageReached && !state.areMessagesLoading)
                         onEvent(ChannelDetailsUiEvent.LoadMessages(state.currentMessagesPageComb.second + 1))
                     else if (state.messages[index].id == state.messages.first().id
                         && state.currentMessagesPageComb.first > 1
-                        && !state.isMessagesLoading
+                        && !state.areMessagesLoading
                     )
                         onEvent(ChannelDetailsUiEvent.LoadMessages(state.currentMessagesPageComb.first - 1))
                     MessageCard(
@@ -212,12 +219,20 @@ fun ChannelDetailsPage(
                         message = message,
                         onLoadAttachment = { ref, name ->
                             onEvent(ChannelDetailsUiEvent.LoadAttachment(ref, name))
+                        },
+                        onDeleteMessageClick = { selectedMessageId = message.id },
+                        onEditMessageClick = {
+                            onEvent(
+                                ChannelDetailsUiEvent.SetEditedMessage(
+                                    message
+                                )
+                            )
                         }
                     )
                 }
 
                 when {
-                    state.isMessagesLoading && state.isLoadingDownwards -> item {
+                    state.areMessagesLoading && state.isLoadingDownwards -> item {
                         CircularProgressIndicator(
                             Modifier
                                 .size(80.dp)
@@ -256,10 +271,23 @@ fun ChannelDetailsPage(
                         popupContent = state.canSend.errorResId
                     }
                 },
+                isEditingMessage = state.selectedMessageId != null,
+                onCancelEditingClick = { onEvent(ChannelDetailsUiEvent.SetEditedMessage(null)) }
             )
 
         }
     }
+
+    if (selectedMessageId != null)
+        PetWalkerAlertDialog(
+            title = stringResource(Res.string.are_sure_label),
+            text = stringResource(Res.string.confirm_delete_message_label),
+            onConfirm = {
+                onEvent(ChannelDetailsUiEvent.DeleteMessage(selectedMessageId!!))
+                selectedMessageId = null
+            },
+            onDismissRequest = { selectedMessageId = null }
+        )
     if (popupContent != null)
         Popup(
             alignment = Alignment.BottomCenter,

@@ -66,7 +66,7 @@ fun String.isValidPassword(
 
 fun String.containsAny(
     ignoreCase: Boolean,
-     vararg others: CharSequence,
+    vararg others: CharSequence,
 ): Boolean {
     return others.any {
         this.contains(it, ignoreCase)

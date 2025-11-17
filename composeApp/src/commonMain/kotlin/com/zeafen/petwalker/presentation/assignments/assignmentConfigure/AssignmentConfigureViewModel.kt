@@ -28,14 +28,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.early_error_error_txt
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
 import petwalker.composeapp.generated.resources.least_words_count_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
 import petwalker.composeapp.generated.resources.required_label
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -80,7 +82,7 @@ class AssignmentConfigureViewModel(
 
                             value.assignmentTitle.length > 200 -> ValidationInfo(
                                 false,
-                                Res.string.length_max_error,
+                                Res.string.incorrect_length_max_error,
                                 listOf(200)
                             )
 
@@ -127,13 +129,6 @@ class AssignmentConfigureViewModel(
                 _state.update {
                     it.copy(
                         descriptionValidation = when {
-                            value.descriptionNeeded && value.assignmentDescription.countWords() < 5 ->
-                                ValidationInfo(
-                                    false,
-                                    Res.string.least_words_count_error_txt,
-                                    listOf(5)
-                                )
-
                             value.descriptionNeeded && value.assignmentDescription.isBlank() ->
                                 ValidationInfo(
                                     false,
@@ -141,9 +136,16 @@ class AssignmentConfigureViewModel(
                                     emptyList()
                                 )
 
+                            value.descriptionNeeded && value.assignmentDescription.countWords() < 5 ->
+                                ValidationInfo(
+                                    false,
+                                    Res.string.least_words_count_error_txt,
+                                    listOf(5)
+                                )
+
                             value.assignmentDescription.length > 500 -> ValidationInfo(
                                 false,
-                                Res.string.length_max_error,
+                                Res.string.incorrect_length_max_error,
                                 listOf(500)
                             )
 
@@ -187,13 +189,14 @@ class AssignmentConfigureViewModel(
         viewModelScope.launch {
             when (event) {
                 is AssignmentConfigureUiEvent.AddAssignedPet -> {
-                    _state.update {
-                        it.copy(
-                            assignedPets = it.assignedPets.apply {
-                                plus(event.pet)
-                                distinct()
-                            }
-                        )
+                    inputMutex.withLock {
+                        _state.update {
+                            it.copy(
+                                assignedPets = it.assignedPets
+                                    .plus(event.pet)
+                                    .distinctBy { it.id }
+                            )
+                        }
                     }
                 }
 
@@ -214,7 +217,7 @@ class AssignmentConfigureViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(publishingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -230,30 +233,52 @@ class AssignmentConfigureViewModel(
                         return@launch
                     }
 
+                    val date = state.value.assignmentDate!!
+                    val time = state.value.assignmentTime
                     val assignment = AssignmentRequest(
                         state.value.assignmentTitle,
                         state.value.assignmentDescription,
                         state.value.assignmentType!!,
-                        state.value.assignmentDate!!,
+                        LocalDateTime(date.date, time),
                         state.value.assignedPets.map { it.id },
                         location
                     )
-                    val result = state.value.selectedAssignmentId?.let {
-                        assignmentsRepository.updateAssignment(
-                            it,
+                    if (state.value.selectedAssignmentId != null) {
+                        val result = assignmentsRepository.updateAssignment(
+                            state.value.selectedAssignmentId!!,
                             assignment
                         )
-                    } ?: assignmentsRepository.postAssignment(
-                        assignment
-                    )
 
-                    _state.update {
-                        it.copy(
-                            publishingResult =
-                                if (result is APIResult.Error)
-                                    APIResult.Error(result.info)
-                                else APIResult.Succeed()
+                        _state.update {
+                            it.copy(
+                                publishingResult =
+                                    if (result is APIResult.Error)
+                                        APIResult.Error(result.info)
+                                    else APIResult.Succeed()
+                            )
+                        }
+                    } else {
+
+                        //posting assignment
+                        val result = assignmentsRepository.postAssignment(
+                            assignment
                         )
+
+                        //updating stored value
+                        val assignment = if (result is APIResult.Succeed) result.data else null
+                        _state.update {
+                            it.copy(
+                                publishingResult =
+                                    if (result is APIResult.Error)
+                                        APIResult.Error(result.info)
+                                    else APIResult.Succeed(),
+                                selectedAssignmentId = assignment?.id
+                            )
+                        }
+
+                        //merging assigned pets data
+                        if (assignment != null)
+                            onEvent(AssignmentConfigureUiEvent.LoadAssignedPets())
                     }
                 }
 
@@ -267,7 +292,7 @@ class AssignmentConfigureViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(availablePets = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }
@@ -337,7 +362,7 @@ class AssignmentConfigureViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(assignmentLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }
@@ -358,6 +383,8 @@ class AssignmentConfigureViewModel(
                                         assignmentTitle = assignment.data!!.title,
                                         assignmentDescription = assignment.data.description ?: "",
                                         assignmentType = assignment.data.type,
+                                        assignmentDate = assignment.data.dateTime,
+                                        assignmentTime = assignment.data.dateTime.time
                                     )
                                 }
                             }
@@ -399,7 +426,7 @@ class AssignmentConfigureViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 assignedPetsLoading = false,
@@ -409,11 +436,28 @@ class AssignmentConfigureViewModel(
                         return@launch
                     }
 
-                    val result = petsRepository.getAssignmentPets(
-                        selectedId,
-                        event.page,
-                        15
-                    )
+                    val result = when {
+                        currentComb.second == state.value.assignedPetsPages.first ->
+                            petsRepository.getAssignmentPets(
+                                selectedId,
+                                currentComb.first,
+                                15
+                            )
+
+                        currentComb.first == state.value.assignedPetsPages.second ->
+                            petsRepository.getAssignmentPets(
+                                selectedId,
+                                currentComb.second,
+                                15
+                            )
+
+                        else -> petsRepository.getAssignmentPets(
+                            selectedId,
+                            event.page.coerceAtLeast(1),
+                            15
+                        )
+                    }
+
 
                     when (result) {
                         is APIResult.Error -> {
@@ -429,10 +473,12 @@ class AssignmentConfigureViewModel(
                         is APIResult.Succeed -> {
                             val maxPage = result.data?.totalPages ?: state.value.assignedPetsMaxPage
                             val newPets = when {
-                                currentComb.second == state.value.assignedPetsPages.first ->
+                                currentComb != state.value.assignedPetsPages &&
+                                        currentComb.second == state.value.assignedPetsPages.first ->
                                     result.data!!.result + state.value.assignedPets.take(15)
 
-                                currentComb.first == state.value.assignedPetsPages.second ->
+                                currentComb != state.value.assignedPetsPages &&
+                                        currentComb.first == state.value.assignedPetsPages.second ->
                                     state.value.assignedPets.takeLast(15) + result.data!!.result
 
                                 else -> result.data!!.result
@@ -443,6 +489,7 @@ class AssignmentConfigureViewModel(
                                     assignedPets = newPets,
                                     assignedPetsLoading = false,
                                     assignedPetsLoadingError = null,
+                                    assignedPetsPages = currentComb,
                                     assignedPetsMaxPage = maxPage
                                 )
                             }
@@ -467,6 +514,16 @@ class AssignmentConfigureViewModel(
                     }
                 }
 
+                is AssignmentConfigureUiEvent.SetAssignmentTime -> {
+                    inputMutex.withLock {
+                        _state.update {
+                            it.copy(
+                                assignmentTime = LocalTime(event.hour, event.minute)
+                            )
+                        }
+                    }
+                }
+
                 AssignmentConfigureUiEvent.DeleteAssignment -> {
                     inputMutex.withLock {
                         if (state.value.publishingResult is APIResult.Downloading)
@@ -476,9 +533,9 @@ class AssignmentConfigureViewModel(
                         }
                     }
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
-                            it.copy(assignmentLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
+                            it.copy(publishingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
                         return@launch
                     }
@@ -486,7 +543,7 @@ class AssignmentConfigureViewModel(
                     val assignmentId = state.value.selectedAssignmentId
                     if (assignmentId == null) {
                         _state.update {
-                            it.copy(assignmentLoadingResult = APIResult.Error(NetworkError.NOT_FOUND))
+                            it.copy(publishingResult = APIResult.Error(NetworkError.NOT_FOUND))
                         }
                         return@launch
                     }
@@ -496,15 +553,27 @@ class AssignmentConfigureViewModel(
                     )
                     if (result is APIResult.Error) {
                         _state.update {
-                            it.copy(assignmentLoadingResult = APIResult.Error(result.info))
+                            it.copy(publishingResult = APIResult.Error(result.info))
                         }
                         return@launch
                     }
 
                     _state.update {
-                        it.copy(assignmentLoadingResult = APIResult.Succeed())
+                        it.copy(publishingResult = APIResult.Succeed())
                     }
                     _exitPage.update { true }
+                }
+
+                AssignmentConfigureUiEvent.ClearResult -> {
+                    if (state.value.assignmentLoadingResult !is APIResult.Downloading)
+                        inputMutex.withLock {
+                            _state.update {
+                                it.copy(
+                                    assignmentLoadingResult = null,
+                                    publishingResult = null
+                                )
+                            }
+                        }
                 }
             }
         }

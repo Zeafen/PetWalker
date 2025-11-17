@@ -4,6 +4,7 @@ package com.zeafen.petwalker.presentation.pets.petConfigure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zeafen.petwalker.domain.models.PetWalkerFileInfo
 import com.zeafen.petwalker.domain.models.ValidationInfo
 import com.zeafen.petwalker.domain.models.api.pets.PetMedicalInfo
 import com.zeafen.petwalker.domain.models.api.pets.PetRequest
@@ -37,7 +38,7 @@ import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.date_less_than_error_txt
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.greater_than_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
 import petwalker.composeapp.generated.resources.nan_error_txt
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -73,7 +74,7 @@ class PetConfigureViewModel(
 
                             value.petName.length > 200 -> ValidationInfo(
                                 false,
-                                Res.string.length_max_error,
+                                Res.string.incorrect_length_max_error,
                                 listOf(200)
                             )
 
@@ -97,7 +98,31 @@ class PetConfigureViewModel(
 
                             value.petSpecies.length > 200 -> ValidationInfo(
                                 false,
-                                Res.string.length_max_error,
+                                Res.string.incorrect_length_max_error,
+                                listOf(200)
+                            )
+
+                            else -> ValidationInfo(true, null, emptyList())
+                        }
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+        _state
+            .distinctUntilChangedBy { it.petBreed }
+            .onEach { value ->
+                _state.update {
+                    it.copy(
+                        breedValidation = when {
+                            value.petBreed.isBlank() -> ValidationInfo(
+                                false,
+                                Res.string.empty_fields_error_txt,
+                                emptyList()
+                            )
+
+                            value.petBreed.length > 200 -> ValidationInfo(
+                                false,
+                                Res.string.incorrect_length_max_error,
                                 listOf(200)
                             )
 
@@ -150,18 +175,18 @@ class PetConfigureViewModel(
                                 Res.string.date_less_than_error_txt,
                                 listOf(
                                     Clock.System.now()
-                                    .toLocalDateTime(TimeZone.currentSystemDefault())
-                                    .format(LocalDateTime.Format {
-                                        day()
-                                        char('/')
-                                        monthNumber()
-                                        char('/')
-                                        year()
-                                        char(' ')
-                                        hour()
-                                        char(':')
-                                        minute()
-                                    })
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                        .format(LocalDateTime.Format {
+                                            day()
+                                            char('/')
+                                            monthNumber()
+                                            char('/')
+                                            year()
+                                            char(' ')
+                                            hour()
+                                            char(':')
+                                            minute()
+                                        })
                                 )
                             )
 
@@ -176,6 +201,7 @@ class PetConfigureViewModel(
             .distinctUntilChanged { old, new ->
                 old.nameValidation == new.nameValidation
                         && old.speciesValidation == new.speciesValidation
+                        && old.breedValidation == new.breedValidation
                         && old.weightValidation == new.weightValidation
                         && old.date_birthValidation == new.date_birthValidation
             }
@@ -184,6 +210,7 @@ class PetConfigureViewModel(
                     it.copy(
                         canPublish = value.nameValidation.isValid
                                 && value.speciesValidation.isValid
+                                && value.breedValidation.isValid
                                 && value.date_birthValidation.isValid
                                 && value.weightValidation.isValid
                     )
@@ -207,7 +234,7 @@ class PetConfigureViewModel(
                     if (event.id != null) {
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(petLoadingResult = Error(NetworkError.UNAUTHORIZED))
                             }
@@ -219,13 +246,13 @@ class PetConfigureViewModel(
                                 val data = petsRepository.getPetMedicalInfo(
                                     event.id
                                 )
-                                if (data is APIResult.Succeed)
+                                if (data is Succeed)
                                     data.data
                                 else null
                             }
 
                         val pet = petsRepository.getPet(event.id)
-                        if (pet is APIResult.Error) {
+                        if (pet is Error) {
                             _state.update {
                                 it.copy(petLoadingResult = Error(pet.info))
                             }
@@ -236,7 +263,7 @@ class PetConfigureViewModel(
                             _state.update {
                                 it.copy(
                                     petLoadingResult = Succeed(),
-                                    petName = (pet as APIResult.Succeed).data!!.name,
+                                    petName = (pet as Succeed).data!!.name,
                                     petSpecies = pet.data!!.species,
                                     petBreed = pet.data.breed,
                                     petWeight = pet.data.weight.toString(),
@@ -264,7 +291,7 @@ class PetConfigureViewModel(
                 }
 
                 PetConfigureUiEvent.PublishData -> {
-                    if (state.value.petLoadingResult !is APIResult.Downloading)
+                    if (state.value.petLoadingResult is Downloading)
                         return@launch
                     inputMutex.withLock {
                         _state.update {
@@ -279,7 +306,7 @@ class PetConfigureViewModel(
                         return@launch
                     }
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(petLoadingResult = Error(NetworkError.UNAUTHORIZED))
                         }
@@ -299,15 +326,33 @@ class PetConfigureViewModel(
                             val result = petsRepository.updatePet(
                                 state.value.selectedPetId!!, pet
                             )
+                            val imageResult = state.value.petImageUri?.let {
+                                petsRepository.postPetImage(
+                                    state.value.selectedPetId!!,
+                                    it
+                                )
+                            }
 
                             _state.update {
-                                it.copy(petLoadingResult = result)
+                                it.copy(
+                                    petLoadingResult = result,
+                                    petImageUri = if (imageResult is APIResult.Succeed)
+                                        imageResult.data?.let {
+                                            PetWalkerFileInfo(
+                                                it,
+                                                "",
+                                                "image",
+                                                null
+                                            )
+                                        }
+                                    else null
+                                )
                             }
                         }
 
                         state.value.selectedPetId == null -> {
                             val result = petsRepository.postPet(pet)
-                            if (result is APIResult.Error) {
+                            if (result is Error) {
                                 _state.update {
                                     it.copy(petLoadingResult = Error(result.info))
                                 }
@@ -317,12 +362,12 @@ class PetConfigureViewModel(
                             val medicalInfoResult = state.value.petMedicalInfos.map {
                                 async {
                                     val result = petsRepository.postPetMedicalInfo(
-                                        (result as APIResult.Succeed).data!!.id,
+                                        (result as Succeed).data!!.id,
                                         it.type,
                                         it.description,
                                         state.value.medicalInfoDocs[it.id]
                                     )
-                                    if (result is APIResult.Succeed)
+                                    if (result is Succeed)
                                         result.data
                                     else null
                                 }
@@ -330,7 +375,7 @@ class PetConfigureViewModel(
                             _state.update {
                                 it.copy(
                                     petLoadingResult = Succeed(),
-                                    selectedPetId = (result as APIResult.Succeed).data!!.id,
+                                    selectedPetId = (result as Succeed).data!!.id,
                                     petMedicalInfos = medicalInfoResult.awaitAll()
                                         .mapNotNull { it }
                                 )
@@ -403,7 +448,7 @@ class PetConfigureViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(medicalInfoEditingResult = Error(NetworkError.UNAUTHORIZED))
                             }
@@ -416,13 +461,13 @@ class PetConfigureViewModel(
                             event.description,
                             event.document
                         )
-                        if (result is APIResult.Error) {
+                        if (result is Error) {
                             _state.update {
                                 it.copy(medicalInfoEditingResult = Error(result.info))
                             }
                             return@launch
                         }
-                        medicalInfo = (result as APIResult.Succeed).data!!
+                        medicalInfo = (result as Succeed).data!!
 
                     }
                     _state.update {
@@ -440,7 +485,7 @@ class PetConfigureViewModel(
                                 it.copy(medicalInfoEditingResult = Downloading())
                             }
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
                                     it.copy(medicalInfoEditingResult = Error(NetworkError.UNAUTHORIZED))
                                 }
@@ -454,7 +499,7 @@ class PetConfigureViewModel(
                             _state.update {
                                 it.copy(medicalInfoEditingResult = result)
                             }
-                            if (result is APIResult.Error)
+                            if (result is Error)
                                 return@launch
                         }
 
@@ -477,7 +522,7 @@ class PetConfigureViewModel(
                                 it.copy(medicalInfoEditingResult = Downloading())
                             }
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
                                     it.copy(medicalInfoEditingResult = Error(NetworkError.UNAUTHORIZED))
                                 }
@@ -491,13 +536,13 @@ class PetConfigureViewModel(
                                 event.description,
                                 event.document
                             )
-                            if (result is APIResult.Error) {
+                            if (result is Error) {
                                 _state.update {
                                     it.copy(medicalInfoEditingResult = Error(result.info))
                                 }
                                 return@launch
                             } else {
-                                newMedicalInfo = (result as APIResult.Succeed).data!!
+                                newMedicalInfo = (result as Succeed).data!!
                                 _state.update {
                                     it.copy(medicalInfoEditingResult = Succeed())
                                 }
@@ -518,7 +563,7 @@ class PetConfigureViewModel(
 
                 PetConfigureUiEvent.DeletePet -> {
                     inputMutex.withLock {
-                        if (state.value.petLoadingResult !is APIResult.Downloading)
+                        if (state.value.petLoadingResult is Downloading)
                             return@launch
                         _state.update {
                             it.copy(petLoadingResult = Downloading())
@@ -526,7 +571,7 @@ class PetConfigureViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(petLoadingResult = Error(NetworkError.UNAUTHORIZED))
                         }
@@ -541,8 +586,8 @@ class PetConfigureViewModel(
                         return@launch
                     }
 
-                    val result = petsRepository.deletePet(selectedId!!)
-                    if (result is APIResult.Error) {
+                    val result = petsRepository.deletePet(selectedId)
+                    if (result is Error) {
                         _state.update {
                             it.copy(petLoadingResult = Error(result.info))
                         }
@@ -562,6 +607,15 @@ class PetConfigureViewModel(
                             )
                         }
                     }
+                }
+
+                PetConfigureUiEvent.ClearResult -> {
+                    if (state.value.petLoadingResult !is APIResult.Downloading)
+                        inputMutex.withLock {
+                            _state.update {
+                                it.copy(petLoadingResult = null)
+                            }
+                        }
                 }
             }
         }

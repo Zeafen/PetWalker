@@ -77,7 +77,18 @@ class AuthViewModel(
             .onEach { state ->
                 _state.update {
                     it.copy(
-                        passwordValid = state.password.isValidPassword()
+                        passwordValid = state.password.isValidPassword(),
+                        passwordsMatch = state.password == state.repeatPassword
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+
+        _state.distinctUntilChangedBy { it.repeatPassword }
+            .onEach { state ->
+                _state.update {
+                    it.copy(
+                        passwordsMatch = state.password == state.repeatPassword
                     )
                 }
             }
@@ -243,6 +254,7 @@ class AuthViewModel(
                         _state.update {
                             it.copy(result = Error(signUpResult.info))
                         }
+                        return@launch
                     }
 
                     //authorizing user
@@ -288,7 +300,7 @@ class AuthViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(result = Error(NetworkError.UNAUTHORIZED))
                         }

@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -135,7 +137,8 @@ fun WalkersPage(
                 )
 
                 is APIResult.Succeed -> {
-                    LazyColumn(
+                    LazyVerticalStaggeredGrid(
+                        columns = StaggeredGridCells.Adaptive(minSize = 250.dp),
                         contentPadding = PaddingValues(horizontal = 16.dp)
                     ) {
                         items(
@@ -148,7 +151,7 @@ fun WalkersPage(
                                 onClick = { onWalkerCardClick(walker.id) }
                             )
                         }
-                        item {
+                        item(span = StaggeredGridItemSpan.FullLine) {
                             PageSelectionRow(
                                 modifier = Modifier
                                     .fillMaxWidth(),

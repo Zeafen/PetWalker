@@ -62,7 +62,9 @@ fun WalkerReviewsTab(
     modifier: Modifier = Modifier,
     state: WalkerDetailsPageUiState,
     onGoToAssignmentClick: (String) -> Unit,
-    onEvent: (WalkerDetailsPageUiEvent) -> Unit
+    onEvent: (WalkerDetailsPageUiEvent) -> Unit,
+    onEditReviewClick: (id: String, assignmentId: String) -> Unit,
+    onDeleteReviewClick: (String) -> Unit,
 ) {
     var openFiltersDialog by remember {
         mutableStateOf(false)
@@ -129,7 +131,9 @@ fun WalkerReviewsTab(
         ReviewsList(
             reviews = state.walkerReviews,
             onLoadPage = { onEvent(WalkerDetailsPageUiEvent.LoadWalkerReviews(it)) },
-            onGoToAssignmentClick = onGoToAssignmentClick
+            onGoToAssignmentClick = onGoToAssignmentClick,
+            onEditReviewClick = onEditReviewClick,
+            onDeleteReviewClick = onDeleteReviewClick
         )
     }
 
@@ -228,7 +232,9 @@ fun ReviewsList(
     modifier: Modifier = Modifier,
     reviews: APIResult<PagedResult<ReviewCardModel>, Error>,
     onLoadPage: (page: Int) -> Unit,
-    onGoToAssignmentClick: (String) -> Unit
+    onGoToAssignmentClick: (String) -> Unit,
+    onEditReviewClick: (id: String, assignmentId: String) -> Unit,
+    onDeleteReviewClick: (String) -> Unit,
 ) {
     when (reviews) {
         is APIResult.Downloading -> CircularProgressIndicator(
@@ -257,7 +263,9 @@ fun ReviewsList(
                 items(reviews.data!!.result, key = { it.id }) { review ->
                     ReviewCard(
                         review = review,
-                        onGoToAssignmentClick = onGoToAssignmentClick
+                        onGoToAssignmentClick = onGoToAssignmentClick,
+                        onEditReviewClick = { onEditReviewClick(review.id, review.assignmentId) },
+                        onDeleteReviewClick = { onDeleteReviewClick(review.id) }
                     )
                 }
                 item(span = StaggeredGridItemSpan.FullLine) {

@@ -7,6 +7,7 @@ import com.zeafen.petwalker.domain.models.api.pets.PetInfoType
 import com.zeafen.petwalker.domain.models.api.pets.PetMedicalInfo
 import com.zeafen.petwalker.domain.models.api.pets.PetRequest
 import com.zeafen.petwalker.domain.models.PetWalkerFileInfo
+import com.zeafen.petwalker.domain.models.api.util.Error
 
 interface PetsRepository {
     /***
@@ -83,6 +84,17 @@ interface PetsRepository {
     suspend fun postPet(
         request: PetRequest
     ): APIResult<Pet, com.zeafen.petwalker.domain.models.api.util.Error>
+
+
+    /***
+     * Posts pet image data into the source
+     * @return posted pet entity if request succeeded, otherwise - Error info
+     * @param imageFile - Pet image file to post
+     */
+    suspend fun postPetImage(
+        petId: String,
+        imageFile: PetWalkerFileInfo
+    ): APIResult<String, Error>
 
     /***
      * Posts medical info of the pet into the source

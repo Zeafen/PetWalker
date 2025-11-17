@@ -103,7 +103,7 @@ class HomePageViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     walkersLoadingError = NetworkError.UNAUTHORIZED,
@@ -157,7 +157,7 @@ class HomePageViewModel(
 
                 HomePageUiEvent.LoadData -> {
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null)
+                    if (token == null || token.accessToken.isBlank())
                         return@launch
                     val now = Clock.System.now()
                     val timeZone = TimeZone.currentSystemDefault()
@@ -210,7 +210,7 @@ class HomePageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(bestWalker = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }

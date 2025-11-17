@@ -204,6 +204,8 @@ fun PostConfigurePage(
                 when (PostConfigureTabs.entries[index]) {
                     PostConfigureTabs.InfoInput -> {
                         PostInfoConfigureTab(
+                            modifier = Modifier
+                                .padding(4.dp),
                             postTitle = state.postTitle,
                             titleValidation = state.titleValidation,
                             onTitleChanged = { onEvent(PostConfigureUiEvent.SetPostTitle(it)) },
@@ -216,7 +218,8 @@ fun PostConfigurePage(
                     PostConfigureTabs.Images -> {
                         PostAttachmentsConfigureTab(
                             modifier = Modifier
-                                .heightIn(max = 400.dp),
+                                .heightIn(max = 400.dp)
+                                .padding(4.dp),
                             images = imageAttachments,
                             onAttachmentRemoved = { onEvent(PostConfigureUiEvent.RemoveAttachment(it)) },
                             onAddAttachmentClick = { documentPicker.launch(ExtensionGroups.Image.exts) }
@@ -226,7 +229,8 @@ fun PostConfigurePage(
                     PostConfigureTabs.Attachments -> {
                         PostAttachmentsConfigureTab(
                             modifier = Modifier
-                                .heightIn(max = 400.dp),
+                                .heightIn(max = 400.dp)
+                                .padding(4.dp),
                             images = attachments,
                             onAttachmentRemoved = { onEvent(PostConfigureUiEvent.RemoveAttachment(it)) },
                             onAddAttachmentClick = {

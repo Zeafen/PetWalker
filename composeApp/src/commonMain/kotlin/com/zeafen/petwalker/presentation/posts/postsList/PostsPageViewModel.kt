@@ -59,7 +59,7 @@ class PostsPageViewModel(
 
                     postsLoadingJob = launch {
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(posts = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }

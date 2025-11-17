@@ -54,7 +54,7 @@ class RecruitmentsPageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 recruitmentRequestResult = APIResult.Error(
@@ -102,7 +102,7 @@ class RecruitmentsPageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 recruitmentRequestResult = APIResult.Error(
@@ -136,7 +136,7 @@ class RecruitmentsPageViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 if (event.outComing)
                                     it.copy(outcomingRecruitments = APIResult.Error(NetworkError.UNAUTHORIZED))
@@ -270,7 +270,7 @@ class RecruitmentsPageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 recruitmentRequestResult = APIResult.Error(

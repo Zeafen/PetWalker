@@ -13,5 +13,6 @@ data class ComplaintModel(
     val status: ComplaintStatus,
     val text: String,
     val datePosted: LocalDateTime,
-    val dateSolved: LocalDateTime?
+    val dateSolved: LocalDateTime?,
+    val isOwn: Boolean,
 )

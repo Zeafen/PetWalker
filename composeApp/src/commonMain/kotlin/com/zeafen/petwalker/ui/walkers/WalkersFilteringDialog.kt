@@ -53,10 +53,10 @@ fun WalkersFilteringDialog(
             mutableStateOf(
                 1 to FilterOption(
                     value = FilteringTypes.ListingType(
-                        availableOptions = UsersOrdering.entries,
+                        availableOptions = ServiceType.entries,
                         optionContent = { option ->
                             Text(
-                                stringResource((option as UsersOrdering).displayName),
+                                stringResource((option as ServiceType).displayName),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }

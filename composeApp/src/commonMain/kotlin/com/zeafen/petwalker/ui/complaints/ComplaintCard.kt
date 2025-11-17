@@ -3,6 +3,7 @@ package com.zeafen.petwalker.ui.complaints
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,13 +38,14 @@ import com.zeafen.petwalker.domain.models.ui.ComplaintModel
 import com.zeafen.petwalker.ui.standard.elements.HintWithIcon
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAsyncImage
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerLinkTextButton
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format
 import kotlinx.datetime.format.char
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
+import petwalker.composeapp.generated.resources.ic_delete
+import petwalker.composeapp.generated.resources.ic_edit
 import petwalker.composeapp.generated.resources.ic_online
 import petwalker.composeapp.generated.resources.more_label
 import petwalker.composeapp.generated.resources.see_assignment_btn_txt
@@ -51,7 +55,9 @@ import petwalker.composeapp.generated.resources.see_assignment_btn_txt
 fun ComplaintCard(
     modifier: Modifier = Modifier,
     complaint: ComplaintModel,
-    onSeeAssignmentClick: (String) -> Unit
+    onSeeAssignmentClick: (String) -> Unit,
+    onEditComplaintClick: (() -> Unit)? = null,
+    onDeleteComplaintClick: (() -> Unit)? = null
 ) {
     Card(
         modifier = modifier,
@@ -64,6 +70,36 @@ fun ComplaintCard(
             contentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     ) {
+        if (complaint.isOwn) {
+        FlowRow(
+            modifier = Modifier
+                .padding(
+                    horizontal = 8.dp,
+                    vertical = 12.dp
+                )
+        ) {
+            onEditComplaintClick?.let {
+                IconButton(
+                    onClick = it
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_edit),
+                        contentDescription = "Edit"
+                    )
+                }
+            }
+            onDeleteComplaintClick?.let {
+                IconButton(
+                    onClick = it
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_delete),
+                        contentDescription = "Delete"
+                    )
+                }
+            }
+        }
+    }
         ComplaintCardHeader(
             modifier = Modifier
                 .padding(top = 4.dp, start = 8.dp, end = 8.dp),
@@ -83,11 +119,9 @@ fun ComplaintCard(
                 .padding(horizontal = 12.dp),
             topic = complaint.topic,
             body = complaint.text,
-            onSeeAssignmentClick = complaint.assignmentId?.let {
-                {
-                    onSeeAssignmentClick(it)
-                }
-            }
+            onSeeAssignmentClick = if (!complaint.assignmentId.isNullOrBlank()) {
+                { onSeeAssignmentClick(complaint.assignmentId) }
+            } else null
         )
     }
 }
@@ -143,17 +177,19 @@ fun ComplaintCardHeader(
             modifier = Modifier,
             hint = stringResource(status.displayName) +
                     if (status == ComplaintStatus.Solved && dateSolved != null)
-                        "(${dateSolved.format(LocalDateTime.Format {
-                            day()
-                            char('/')
-                            monthNumber()
-                            char('/')
-                            year()
-                            char(' ')
-                            hour()
-                            char(':')
-                            minute()
-                        })})" else "",
+                        "(${
+                            dateSolved.format(LocalDateTime.Format {
+                                day()
+                                char('/')
+                                monthNumber()
+                                char('/')
+                                year()
+                                char(' ')
+                                hour()
+                                char(':')
+                                minute()
+                            })
+                        })" else "",
             leadingIcon = painterResource(Res.drawable.ic_online),
             textColor = when (status) {
                 ComplaintStatus.Active -> MaterialTheme.colorScheme.error

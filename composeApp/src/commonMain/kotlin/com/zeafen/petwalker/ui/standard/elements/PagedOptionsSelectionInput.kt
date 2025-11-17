@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -21,6 +22,7 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.zeafen.petwalker.data.helpers.DeviceConfiguration
 import com.zeafen.petwalker.domain.models.api.other.PagedResult
 import com.zeafen.petwalker.domain.models.api.util.APIResult
 import com.zeafen.petwalker.domain.models.api.util.Error
@@ -53,6 +56,9 @@ fun <T> PagedOptionsSelectedInput(
     var openAvailableOptions by remember {
         mutableStateOf(false)
     }
+    val deviceConf =
+        DeviceConfiguration.fromWindowSizeClass(currentWindowAdaptiveInfo().windowSizeClass)
+
     Column(modifier = modifier) {
         label?.let {
             Text(
@@ -121,6 +127,21 @@ fun <T> PagedOptionsSelectedInput(
                 is APIResult.Succeed -> {
                     PagedExpandableOptionsList(
                         modifier = Modifier
+                            .heightIn(
+                                max = when (deviceConf) {
+                                    in listOf(
+                                        DeviceConfiguration.MOBILE_LANDSCAPE,
+                                        DeviceConfiguration.TABLET_PORTRAIT
+                                    ) -> 320.dp
+
+                                    in listOf(
+                                        DeviceConfiguration.TABLET_LANDSCAPE,
+                                        DeviceConfiguration.DESKTOP
+                                    ) -> 400.dp
+
+                                    else -> 260.dp
+                                }
+                            )
                             .verticalScroll(rememberScrollState()),
                         availableOptions = availableOptions.data!!.result,
                         currentPage = availableOptions.data.currentPage,

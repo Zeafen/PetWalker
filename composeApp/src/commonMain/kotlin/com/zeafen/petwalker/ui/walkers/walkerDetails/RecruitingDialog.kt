@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.Popup
 import com.zeafen.petwalker.domain.models.api.other.PagedResult
 import com.zeafen.petwalker.domain.models.api.util.APIResult
@@ -59,7 +60,10 @@ fun RecruitingDialog(
         mutableStateOf<StringResource?>(null)
     }
 
-    Dialog(onDismissRequest) {
+    Dialog(
+        onDismissRequest,
+        properties = DialogProperties()
+    ) {
         Column {
             PetWalkerDialogHeader(
                 modifier = Modifier

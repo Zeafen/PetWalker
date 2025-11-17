@@ -41,7 +41,7 @@ import petwalker.composeapp.generated.resources.description_label
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.float_input_hint
 import petwalker.composeapp.generated.resources.greater_than_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
 import petwalker.composeapp.generated.resources.nan_error_txt
 import petwalker.composeapp.generated.resources.option_selection_hint
 import petwalker.composeapp.generated.resources.payment_label
@@ -91,7 +91,7 @@ fun UserServiceConfigureDialog(
             payment.isNotBlank() && payment.takeWhile { ch -> ch !in ".," }.length > 10 ->
                 ValidationInfo(
                     false,
-                    Res.string.length_max_error,
+                    Res.string.incorrect_length_max_error,
                     listOf(10)
                 )
 

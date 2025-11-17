@@ -9,7 +9,9 @@ import kotlinx.datetime.DatePeriod
 sealed interface WalkerDetailsPageUiEvent {
     data class LoadWalker(val walkerId: String) : WalkerDetailsPageUiEvent
     data class LoadWalkerReviews(val page: Int = 1) : WalkerDetailsPageUiEvent
+    data class DeleteWalkerReview(val id: String): WalkerDetailsPageUiEvent
     data class LoadWalkerComplaints(val page: Int = 1) : WalkerDetailsPageUiEvent
+    data class DeleteWalkerComplaint(val id: String): WalkerDetailsPageUiEvent
     data object LoadWalkerReviewsStats : WalkerDetailsPageUiEvent
     data object LoadWalkerComplaintsStats : WalkerDetailsPageUiEvent
 

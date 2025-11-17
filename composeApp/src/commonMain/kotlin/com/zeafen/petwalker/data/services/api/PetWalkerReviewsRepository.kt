@@ -35,10 +35,10 @@ class PetWalkerReviewsRepository(
     private val client: HttpClient
 ) : ReviewsRepository {
     override suspend fun getReviewById(
-        reviewId: String
+        id: String
     ): APIResult<Review, Error> {
         val result = try {
-            client.get(BASE_URL + "reviews/$reviewId") {
+            client.get(BASE_URL + "reviews/$id") {
             }
         } catch (e: UnresolvedAddressException) {
             return APIResult.Error(NetworkError.NO_INTERNET)

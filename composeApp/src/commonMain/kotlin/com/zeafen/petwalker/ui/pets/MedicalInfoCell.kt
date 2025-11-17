@@ -57,7 +57,7 @@ fun MedicalInfoCell(
                             medicalInfo.reference
                         ),
                         onPlayAttachment = {},
-                        onLoadAttachment = { name, ref ->
+                        onLoadAttachment = { ref, name ->
                             onLoadInfoDoc(name, ref)
                         }
                     )

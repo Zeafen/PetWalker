@@ -4,6 +4,7 @@ package com.zeafen.petwalker.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zeafen.petwalker.data.helpers.clearBearerTokenValues
 import com.zeafen.petwalker.data.helpers.isValidEmail
 import com.zeafen.petwalker.domain.models.PetWalkerFileInfo
 import com.zeafen.petwalker.domain.models.ValidationInfo
@@ -17,6 +18,7 @@ import com.zeafen.petwalker.domain.services.AuthDataStoreRepository
 import com.zeafen.petwalker.domain.services.ProfileRepository
 import com.zeafen.petwalker.domain.services.ReviewsRepository
 import com.zeafen.petwalker.domain.services.UsersRepository
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -39,8 +41,8 @@ import kotlinx.datetime.toLocalDateTime
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.incorrect_length_least_error
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
 import petwalker.composeapp.generated.resources.invalid_email_format_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
 import petwalker.composeapp.generated.resources.login_taken_error_txt
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -52,6 +54,7 @@ class ProfilePageViewModel(
     private val usersRepository: UsersRepository,
     private val authDataStore: AuthDataStoreRepository,
     private val reviewsRepository: ReviewsRepository,
+    private val httpClient: HttpClient,
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<ProfilePageUiState> =
@@ -107,7 +110,7 @@ class ProfilePageViewModel(
                             value.firstName.length > 200 ->
                                 ValidationInfo(
                                     false,
-                                    Res.string.length_max_error,
+                                    Res.string.incorrect_length_max_error,
                                     listOf(200)
                                 )
 
@@ -134,8 +137,28 @@ class ProfilePageViewModel(
                             value.lastName.length > 200 ->
                                 ValidationInfo(
                                     false,
-                                    Res.string.length_max_error,
+                                    Res.string.incorrect_length_max_error,
                                     listOf(200)
+                                )
+
+                            else -> ValidationInfo(true, null, emptyList())
+                        }
+                    )
+                }
+            }
+            .launchIn(viewModelScope)
+
+        state
+            .distinctUntilChangedBy { it.aboutMe }
+            .onEach { value ->
+                _state.update {
+                    it.copy(
+                        aboutMeValid = when {
+                            value.aboutMe.length > 500 ->
+                                ValidationInfo(
+                                    false,
+                                    Res.string.incorrect_length_max_error,
+                                    listOf(500)
                                 )
 
                             else -> ValidationInfo(true, null, emptyList())
@@ -193,7 +216,7 @@ class ProfilePageViewModel(
                                 value.login.length > 50 ->
                                     ValidationInfo(
                                         false,
-                                        Res.string.length_max_error,
+                                        Res.string.incorrect_length_max_error,
                                         listOf(50)
                                     )
 
@@ -241,7 +264,7 @@ class ProfilePageViewModel(
             when (event) {
                 is ProfilePageUiEvent.AddService -> {
                     inputMutex.withLock {
-                        if (state.value.services.any { it.service == event.serviceType && it.service != ServiceType.Other })
+                        if (state.value.services.none { it.service == event.serviceType && it.service != ServiceType.Other })
                             _state.update {
                                 it.copy(
                                     services = it.services + UserService(
@@ -292,7 +315,7 @@ class ProfilePageViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     emailEditingResult = APIResult.Error(NetworkError.UNAUTHORIZED)
@@ -323,7 +346,7 @@ class ProfilePageViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(profileLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }
@@ -338,6 +361,7 @@ class ProfilePageViewModel(
                             return@launch
                         } else {
                             authDataStore.clearData()
+                            httpClient.clearBearerTokenValues()
                             _exitAccount.update { true }
                         }
                     }
@@ -364,6 +388,7 @@ class ProfilePageViewModel(
 
                 ProfilePageUiEvent.ExitAccount -> {
                     authDataStore.clearData()
+                    httpClient.clearBearerTokenValues()
                     _exitAccount.update { true }
                 }
 
@@ -397,7 +422,7 @@ class ProfilePageViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     profileLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED)
@@ -509,7 +534,7 @@ class ProfilePageViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     emailEditingResult = APIResult.Error(NetworkError.UNAUTHORIZED)
@@ -625,7 +650,7 @@ class ProfilePageViewModel(
 
                         //verifying request
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     profileLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED)
@@ -692,7 +717,7 @@ class ProfilePageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 assignmentsStats = APIResult.Error(
@@ -724,7 +749,7 @@ class ProfilePageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 complaintsStats = APIResult.Error(
@@ -752,7 +777,7 @@ class ProfilePageViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 reviewsStats = APIResult.Error(

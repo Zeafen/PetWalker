@@ -8,7 +8,6 @@ import com.zeafen.petwalker.domain.models.api.util.NetworkError
 import com.zeafen.petwalker.domain.services.AuthDataStoreRepository
 import com.zeafen.petwalker.domain.services.PetsRepository
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,7 +46,7 @@ class PetDetailsViewModel(
                             it.copy(petMedicalInfo = APIResult.Downloading())
                         }
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(petMedicalInfo = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }
@@ -76,7 +75,7 @@ class PetDetailsViewModel(
                         it.copy(pet = APIResult.Downloading())
                     }
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(pet = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -100,6 +99,7 @@ class PetDetailsViewModel(
                     _state.update {
                         it.copy(selectedMedicalInfoType = event.type)
                     }
+                    onEvent(PetDetailsUiEvent.LoadMedicalInfo)
                 }
             }
         }

@@ -24,7 +24,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -56,8 +55,9 @@ import com.zeafen.petwalker.ui.standard.elements.HintWithIcon
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAlertDialog
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAsyncImage
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerButton
-import com.zeafen.petwalker.ui.standard.elements.PetWalkerDateBicker
+import com.zeafen.petwalker.ui.standard.elements.PetWalkerDatePicker
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerTextInput
+import com.zeafen.petwalker.ui.standard.elements.TwoLayerTopAppBar
 import kotlinx.datetime.LocalDateTime
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
@@ -65,6 +65,7 @@ import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.add_btn_txt
 import petwalker.composeapp.generated.resources.are_sure_label
+import petwalker.composeapp.generated.resources.breed_label
 import petwalker.composeapp.generated.resources.breed_search_field_hint
 import petwalker.composeapp.generated.resources.confirm_delete_pet_label
 import petwalker.composeapp.generated.resources.conflict_error
@@ -112,7 +113,7 @@ fun PetConfigurePage(
         modifier = modifier,
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
-            CenterAlignedTopAppBar(
+            TwoLayerTopAppBar(
                 title = {
                     Text(
                         stringResource(Res.string.pet_details_page_header),
@@ -184,14 +185,14 @@ fun PetConfigurePage(
                             in listOf(
                                 DeviceConfiguration.MOBILE_LANDSCAPE,
                                 DeviceConfiguration.TABLET_PORTRAIT
-                            ) -> 400.dp
+                            ) -> 600.dp
 
                             in listOf(
                                 DeviceConfiguration.TABLET_LANDSCAPE,
                                 DeviceConfiguration.DESKTOP
-                            ) -> 500.dp
+                            ) -> 650.dp
 
-                            else -> 300.dp
+                            else -> 500.dp
                         }
                     ),
                 petName = state.petName,
@@ -342,6 +343,20 @@ fun PetHeaderInput(
                     hint = stringResource(Res.string.species_search_field_hint),
                     label = stringResource(Res.string.species_label)
                 )
+                PetWalkerTextInput(
+                    value = petBreed,
+                    singleLine = true,
+                    isError = !breedValidation.isValid,
+                    supportingText = if (!breedValidation.isValid)
+                        breedValidation.errorResId?.let {
+                            stringResource(it, *breedValidation.formatArgs.toTypedArray())
+                        }
+                    else null,
+                    onValueChanged = onBreedChanged,
+                    leadingIcon = painterResource(Res.drawable.ic_text),
+                    hint = stringResource(Res.string.breed_search_field_hint),
+                    label = stringResource(Res.string.breed_label)
+                )
             }
         else FlowRow(
             modifier = Modifier.weight(3f),
@@ -441,7 +456,7 @@ fun PetStatsInput(
                 keyboardType = KeyboardType.Decimal
             )
             Spacer(Modifier.width(16.dp))
-            PetWalkerDateBicker(
+            PetWalkerDatePicker(
                 modifier = Modifier.weight(1f),
                 currentDate = petBirthDate,
                 onDateChanged = onBirthDateChanged,

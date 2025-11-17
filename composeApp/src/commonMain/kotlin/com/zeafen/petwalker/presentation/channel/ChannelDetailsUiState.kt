@@ -12,6 +12,7 @@ import petwalker.composeapp.generated.resources.empty_fields_error_txt
 
 data class ChannelDetailsUiState(
     val selectedChannelId: String? = null,
+    val selectedMessageId: String? = null,
     val selectedAssignmentId: String? = null,
     val channel: APIResult<Channel, Error> = APIResult.Downloading(),
     val fileLoadingError: Error? = null,
@@ -20,7 +21,7 @@ data class ChannelDetailsUiState(
     val currentMessagesPageComb: Pair<Int, Int> = 1 to 1,
     val maxMessagesPages: Int = 1,
     val messagesLoadingError: Error? = null,
-    val isMessagesLoading: Boolean = false,
+    val areMessagesLoading: Boolean = false,
     val isLoadingDownwards: Boolean = false,
     val maxMessagesPageReached: Boolean = true,
 

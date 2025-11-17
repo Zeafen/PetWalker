@@ -52,8 +52,9 @@ import com.zeafen.petwalker.ui.standard.elements.PagedOptionsSelectedInput
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAlertDialog
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAsyncImage
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerButton
-import com.zeafen.petwalker.ui.standard.elements.PetWalkerDateBicker
+import com.zeafen.petwalker.ui.standard.elements.PetWalkerDatePicker
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerTextInput
+import com.zeafen.petwalker.ui.standard.elements.PetWalkerTimePicker
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -90,6 +91,9 @@ fun AssignmentConfigurePage(
     var toastMsgTxt by remember {
         mutableStateOf<StringResource?>(null)
     }
+
+
+
     Scaffold(
         modifier = modifier,
         contentWindowInsets = WindowInsets.statusBars,
@@ -185,9 +189,9 @@ fun AssignmentConfigurePage(
                     onTitleChanged = { onEvent(AssignmentConfigureUiEvent.SetAssignmentTitle(it)) }
                 )
             }
-
             Spacer(Modifier.height(16.dp))
-            PetWalkerDateBicker(
+
+            PetWalkerDatePicker(
                 currentDate = state.assignmentDate,
                 isError = !state.dateValidation.isValid,
                 errorString = state.dateValidation.errorResId?.let {
@@ -195,14 +199,20 @@ fun AssignmentConfigurePage(
                 },
                 onDateChanged = { onEvent(AssignmentConfigureUiEvent.SetAssignmentDate(it)) }
             )
-            if (!state.dateValidation.isValid)
-                state.dateValidation.errorResId?.let {
-                    Text(
-                        text = stringResource(it, *state.dateValidation.formatArgs.toTypedArray()),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium
+            Spacer(Modifier.height(16.dp))
+
+            PetWalkerTimePicker(
+                currentTime = state.assignmentDate?.time,
+                isError = !state.dateValidation.isValid,
+                errorString = state.dateValidation.errorResId?.let {
+                    stringResource(it)
+                },
+                onTimeChanged = { h, m ->
+                    onEvent(
+                        AssignmentConfigureUiEvent.SetAssignmentTime(h, m)
                     )
                 }
+            )
             Spacer(Modifier.height(16.dp))
 
             PagedOptionsSelectedInput(

@@ -30,8 +30,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.append
 import io.ktor.http.contentType
 import io.ktor.util.network.UnresolvedAddressException
-import io.ktor.utils.io.core.buildPacket
-import io.ktor.utils.io.core.writeFully
 
 class PetWalkerPetsRepository(
     private val client: HttpClient
@@ -251,6 +249,55 @@ class PetWalkerPetsRepository(
         }
     }
 
+    override suspend fun postPetImage(petId: String, imageFile: PetWalkerFileInfo): APIResult<String, Error> {
+        val result = try {
+            client.submitFormWithBinaryData(
+                BASE_URL + "pets/$petId/image",
+                formData {
+                    imageFile.readBytes?.let { func ->
+                        append("image", func(), Headers.build {
+                            this.append(
+                                HttpHeaders.ContentDisposition,
+                                "filename=${
+                                    imageFile.displayName.filter { ch ->
+                                        Regex("[A-Za-z.0-9]").matches(
+                                            ch.toString()
+                                        )
+                                    }
+                                }"
+                            )
+                            this.append(
+                                HttpHeaders.ContentType,
+                                imageFile.mediaType
+                            )
+                        })
+                    }
+                })
+        } catch (e: UnresolvedAddressException) {
+            return APIResult.Error(NetworkError.NO_INTERNET)
+        } catch (e: SocketTimeoutException) {
+            return APIResult.Error(NetworkError.REQUEST_TIMEOUT)
+        } catch (e: ConnectTimeoutException) {
+            return APIResult.Error(NetworkError.REQUEST_TIMEOUT)
+        }
+
+        return when (result.status.value) {
+            in 200..299 -> {
+                val body = result.body<String>()
+                APIResult.Succeed(body)
+            }
+
+            400 -> APIResult.Error(NetworkError.SERVER_ERROR, result.bodyAsText())
+            401 -> APIResult.Error(NetworkError.UNAUTHORIZED)
+            404 -> APIResult.Error(NetworkError.NOT_FOUND, result.bodyAsText())
+            409 -> APIResult.Error(NetworkError.CONFLICT, result.bodyAsText())
+            408 -> APIResult.Error(NetworkError.REQUEST_TIMEOUT, result.bodyAsText())
+            413 -> APIResult.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> APIResult.Error(NetworkError.SERVER_ERROR, result.bodyAsText())
+            else -> APIResult.Error(NetworkError.UNKNOWN, result.bodyAsText())
+        }
+    }
+
     override suspend fun postPetMedicalInfo(
         petId: String,
         type: PetInfoType,
@@ -269,11 +316,17 @@ class PetWalkerPetsRepository(
                         this.append("document", readBytes(), Headers.build {
                             this.append(
                                 HttpHeaders.ContentDisposition,
-                                "filename=${document.displayName}"
+                                "filename=${
+                                    document.displayName.filter { ch ->
+                                        Regex("[A-Za-z.0-9]").matches(
+                                            ch.toString()
+                                        )
+                                    }
+                                }"
                             )
                             this.append(
                                 HttpHeaders.ContentType,
-                                ContentType.Application.OctetStream
+                                document.mediaType
                             )
                         })
                     }
@@ -388,11 +441,17 @@ class PetWalkerPetsRepository(
                         this.append("document", readBytes(), Headers.build {
                             this.append(
                                 HttpHeaders.ContentDisposition,
-                                "filename=${document.displayName}"
+                                "filename=${
+                                    document.displayName.filter { ch ->
+                                        Regex("[A-Za-z.0-9]").matches(
+                                            ch.toString()
+                                        )
+                                    }
+                                }"
                             )
                             this.append(
                                 HttpHeaders.ContentType,
-                                ContentType.Application.OctetStream
+                                document.mediaType
                             )
                         })
                     }

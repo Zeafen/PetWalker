@@ -141,7 +141,8 @@ fun PostCard(
         ) { page ->
             PetWalkerAsyncImage(
                 asyncImageModifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(4.dp),
                 imageUrl = imageAttachments.getOrNull(page)?.reference
             )
         }
@@ -286,7 +287,8 @@ fun PostCard(
         ) { page ->
             PetWalkerAsyncImage(
                 asyncImageModifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(4.dp),
                 imageUrl = imageAttachments.getOrNull(page)?.reference
             )
         }

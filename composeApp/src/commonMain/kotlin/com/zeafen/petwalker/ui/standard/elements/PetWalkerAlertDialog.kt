@@ -43,7 +43,7 @@ fun PetWalkerAlertDialog(
             PetWalkerButton(
                 text = stringResource(Res.string.cancel_btn_txt),
                 containerColor = MaterialTheme.colorScheme.error,
-                onClick = onConfirm,
+                onClick = onDismissRequest,
             )
         },
         title = {

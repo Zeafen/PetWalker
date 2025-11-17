@@ -401,7 +401,6 @@ fun BestWalkerInfoCell(
                 )
                 .weight(3f),
             imageUrl = walker.imageUrl,
-            defaultImage = painterResource(Res.drawable.img)
         )
     }
 }

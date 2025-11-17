@@ -57,7 +57,7 @@ fun ComplaintFilteringDialog(
         }
         var statusOption by remember {
             mutableStateOf(
-                1 to FilterOption(
+                2 to FilterOption(
                     name = Res.string.topic_label,
                     value = FilteringTypes.ListingType(
                         singleSelection = true,
@@ -74,7 +74,7 @@ fun ComplaintFilteringDialog(
         }
         var periodOption by remember {
             mutableStateOf(
-                1 to FilterOption(
+                3 to FilterOption(
                     name = Res.string.topic_label,
                     value = FilteringTypes.ListingType(
                         singleSelection = true,

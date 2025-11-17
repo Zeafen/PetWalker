@@ -10,7 +10,6 @@ import com.zeafen.petwalker.domain.models.api.util.APIResult
 import com.zeafen.petwalker.domain.models.api.util.NetworkError
 import com.zeafen.petwalker.domain.services.AuthDataStoreRepository
 import com.zeafen.petwalker.domain.services.PostsRepository
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,7 +25,7 @@ import kotlinx.coroutines.sync.withLock
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.least_words_count_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -56,7 +55,7 @@ class PostConfigureViewModel(
 
                             value.postTitle.length > 300 -> ValidationInfo(
                                 false,
-                                Res.string.length_max_error,
+                                Res.string.incorrect_length_max_error,
                                 listOf(300)
                             )
 
@@ -118,7 +117,7 @@ class PostConfigureViewModel(
                             }
 
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
                                     it.copy(attachmentEditingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                                 }
@@ -187,7 +186,7 @@ class PostConfigureViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(postLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -245,7 +244,7 @@ class PostConfigureViewModel(
                             _state.update { it.copy(attachmentEditingResult = APIResult.Downloading()) }
 
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
                                     it.copy(attachmentEditingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                                 }
@@ -305,7 +304,7 @@ class PostConfigureViewModel(
 
                     if (event.id != null) {
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(postLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }

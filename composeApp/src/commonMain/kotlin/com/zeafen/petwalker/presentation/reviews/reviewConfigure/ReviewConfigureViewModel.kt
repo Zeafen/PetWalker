@@ -2,9 +2,13 @@ package com.zeafen.petwalker.presentation.reviews.reviewConfigure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.zeafen.petwalker.data.helpers.countWords
 import com.zeafen.petwalker.domain.models.ValidationInfo
 import com.zeafen.petwalker.domain.models.api.reviews.ReviewRequest
 import com.zeafen.petwalker.domain.models.api.util.APIResult
+import com.zeafen.petwalker.domain.models.api.util.APIResult.Downloading
+import com.zeafen.petwalker.domain.models.api.util.APIResult.Error
+import com.zeafen.petwalker.domain.models.api.util.APIResult.Succeed
 import com.zeafen.petwalker.domain.models.api.util.NetworkError
 import com.zeafen.petwalker.domain.services.AssignmentsRepository
 import com.zeafen.petwalker.domain.services.AuthDataStoreRepository
@@ -24,7 +28,9 @@ import kotlinx.coroutines.sync.withLock
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.greater_than_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
+import petwalker.composeapp.generated.resources.incorrect_length_least_error
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
+import petwalker.composeapp.generated.resources.least_words_count_error_txt
 import petwalker.composeapp.generated.resources.less_than_error_txt
 
 class ReviewConfigureViewModel(
@@ -64,10 +70,24 @@ class ReviewConfigureViewModel(
                                     emptyList()
                                 )
 
+                            value.reviewText.countWords() < 5 ->
+                                ValidationInfo(
+                                    false,
+                                    Res.string.least_words_count_error_txt,
+                                    listOf(5)
+                                )
+
+                            value.reviewText.length < 50 ->
+                                ValidationInfo(
+                                    false,
+                                    Res.string.incorrect_length_least_error,
+                                    listOf(50)
+                                )
+
                             value.reviewText.length > 500 ->
                                 ValidationInfo(
                                     false,
-                                    Res.string.length_max_error,
+                                    Res.string.incorrect_length_max_error,
                                     listOf(500)
                                 )
 
@@ -127,7 +147,7 @@ class ReviewConfigureViewModel(
                 ReviewConfigureUiEvent.PublishReview -> {
                     if (!state.value.canPublish) {
                         _state.update {
-                            it.copy(reviewLoadingResult = APIResult.Error(NetworkError.CONFLICT))
+                            it.copy(reviewLoadingResult = Error(NetworkError.CONFLICT))
                         }
                         return@launch
                     }
@@ -136,13 +156,13 @@ class ReviewConfigureViewModel(
                         if (state.value.reviewLoadingResult is APIResult.Downloading)
                             return@launch
                         _state.update {
-                            it.copy(reviewLoadingResult = APIResult.Downloading())
+                            it.copy(reviewLoadingResult = Downloading())
                         }
                     }
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
-                            it.copy(reviewLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
+                            it.copy(reviewLoadingResult = Error(NetworkError.UNAUTHORIZED))
                         }
                         return@launch
                     }
@@ -157,7 +177,7 @@ class ReviewConfigureViewModel(
                                 state.value.selectedReviewId!!,
                                 review
                             )
-                            _state.update {
+                                _state.update {
                                 it.copy(reviewLoadingResult = result)
                             }
                         }
@@ -169,14 +189,14 @@ class ReviewConfigureViewModel(
                             )
                             if (result is APIResult.Error) {
                                 _state.update {
-                                    it.copy(reviewLoadingResult = APIResult.Error(result.info))
+                                    it.copy(reviewLoadingResult = Error(result.info))
                                 }
                                 return@launch
                             }
 
                             _state.update {
                                 it.copy(
-                                    reviewLoadingResult = APIResult.Succeed(),
+                                    reviewLoadingResult = Succeed(),
                                     selectedReviewId = (result as APIResult.Succeed).data!!.id
                                 )
                             }
@@ -189,20 +209,20 @@ class ReviewConfigureViewModel(
                         return@launch
 
                     _state.update {
-                        it.copy(assignmentLoadingResult = APIResult.Downloading())
+                        it.copy(assignmentLoadingResult = Downloading())
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
-                            it.copy(assignmentLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
+                            it.copy(assignmentLoadingResult = Error(NetworkError.UNAUTHORIZED))
                         }
                         return@launch
                     }
 
                     if (state.value.reviewedAssignmentId.isEmpty()) {
                         _state.update {
-                            it.copy(assignmentLoadingResult = APIResult.Error(NetworkError.NOT_FOUND))
+                            it.copy(assignmentLoadingResult = Error(NetworkError.NOT_FOUND))
                         }
                         return@launch
                     }
@@ -214,8 +234,8 @@ class ReviewConfigureViewModel(
                     _state.update {
                         it.copy(
                             assignmentLoadingResult = if (assignment is APIResult.Error)
-                                APIResult.Error(assignment.info)
-                            else APIResult.Succeed(),
+                                Error(assignment.info)
+                            else Succeed(),
                             reviewedAssignmentTitle = (assignment as APIResult.Succeed).data?.title
                                 ?: "",
                             reviewedAssignmentType = assignment.data?.type
@@ -242,15 +262,15 @@ class ReviewConfigureViewModel(
                 is ReviewConfigureUiEvent.InitializeReview -> {
                     _state.update {
                         it.copy(
-                            reviewLoadingResult = APIResult.Downloading(),
+                            reviewLoadingResult = Downloading(),
                             selectedReviewId = event.reviewId,
                             reviewedAssignmentId = event.assignmentId
                         )
                     }
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
-                            it.copy(reviewLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
+                            it.copy(reviewLoadingResult = Error(NetworkError.UNAUTHORIZED))
                         }
                         return@launch
                     }
@@ -260,25 +280,25 @@ class ReviewConfigureViewModel(
                             reviewsRepository.getReviewById(
                                 event.reviewId
                             )
-
-                        }
+                        } ?: reviewsRepository.getReviewById(event.assignmentId)
                         _state.update {
                             if (review is APIResult.Error)
                                 it.copy(
-                                    reviewLoadingResult = APIResult.Error(review.info)
+                                    reviewLoadingResult = Error(review.info)
                                 )
                             else
                                 it.copy(
-                                    reviewLoadingResult = APIResult.Succeed(),
-                                    reviewText = (review as APIResult.Succeed?)?.data?.text ?: "",
-                                    reviewRating = review?.data?.rating ?: 0
+                                    reviewLoadingResult = Succeed(),
+                                    selectedReviewId = (review as APIResult.Succeed).data?.id,
+                                    reviewText = review.data?.text ?: "",
+                                    reviewRating = review.data?.rating ?: 0
                                 )
                         }
                     }
                     launch {
                         _state.update {
                             it.copy(
-                                assignmentLoadingResult = APIResult.Downloading(),
+                                assignmentLoadingResult = Downloading(),
                                 reviewedAssignmentId = event.assignmentId
                             )
                         }
@@ -288,16 +308,25 @@ class ReviewConfigureViewModel(
                         _state.update {
                             if (assignment is APIResult.Error)
                                 it.copy(
-                                    assignmentLoadingResult = APIResult.Error(assignment.info)
+                                    assignmentLoadingResult = Error(assignment.info)
                                 )
                             else it.copy(
                                 reviewedAssignmentTitle = (assignment as APIResult.Succeed).data?.title
                                     ?: "",
                                 reviewedAssignmentType = assignment.data?.type,
-                                assignmentLoadingResult = APIResult.Succeed()
+                                assignmentLoadingResult = Succeed()
                             )
                         }
                     }
+                }
+
+                ReviewConfigureUiEvent.ClearResult -> {
+                    if (state.value.reviewLoadingResult !is APIResult.Downloading)
+                        inputMutex.withLock {
+                            _state.update {
+                                it.copy(reviewLoadingResult = null)
+                            }
+                        }
                 }
             }
         }

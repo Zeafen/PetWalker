@@ -22,6 +22,7 @@ import com.zeafen.petwalker.domain.services.UsersRepository
 import com.zeafen.petwalker.presentation.map.MapScreenUiEvent.SetPresentationType
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.auth.authProvider
 import io.ktor.client.request.get
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
@@ -114,7 +115,7 @@ class MapScreenViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(tilesLoadingResult = Error(NetworkError.UNAUTHORIZED))
                             }

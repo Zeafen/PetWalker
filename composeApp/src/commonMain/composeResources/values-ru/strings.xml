@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="app_name">Pet Walker</string>
+
+    <!--Screen headers-->
+    <string name="map_screen_header">Карта PetWalker</string>
+    <string name="profile_page_header">Профиль</string>
+    <string name="walkers_page_header">Ассистенты</string>
+    <string name="walker_details_pages_header">Ассистент</string>
+    <string name="assignments_page_header">Объявления</string>
+    <string name="own_assignments_page_header">Мои объявления</string>
+    <string name="recruitments_page_header">Заявки</string>
+    <string name="assignment_details_pages_header">Объявление</string>
+    <string name="pets_screen_header">Питомцы</string>
+    <string name="posts_page_header">Пубьликации</string>
+    <string name="post_info_page_screen_header">Данные о публикации</string>
+    <string name="pet_details_page_header">Профиль питомца</string>
+    <string name="login_page_header">Приступим к авторизации</string>
+    <string name="login_page_slogan">Надёжный помощник для ваших питомцев. Выгул, передержка и уход.</string>
+    <string name="signup_page_header">Регистрация</string>
+    <string name="signup_page_slogan">Это займёт пару минут. И ничего не стоит!</string>
+    <string name="loading_label">Загрузка…</string>
+    <string name="error_info_page_header">Кажется, что-то пошло не так…</string>
+    <string name="error_info_content">Выявлена ошибка: %1$s</string>
+    <string name="forgot_password_page_slogan_first">Не беспокойтесь. Мы отправим вам дальнейшие инструкции</string>
+    <string name="forgot_password_page_slogan_second">На указанный адрес был отправлен код подтверждения. Ведите код до истечения срока его действия (5 мин)</string>
+    <string name="forgot_password_page_slogan_third">Введите надежный и запоминающийся пароль</string>
+
+    <!--Element labels-->
+    <string name="payment_label">Оплата</string>
+    <string name="desired_payment_label">Предпочитаемый тип оплаты</string>
+    <string name="check_walker_details_label">Для получения полной информации взгляните на страницу ассистента</string>
+    <string name="recruiting_label">Найм</string>
+    <string name="login_email_input_label">Логин или почтовый адрес</string>
+    <string name="email_input_label">Адрес эл. почты</string>
+    <string name="code_input_label">Код подтверждения</string>
+    <string name="login_input_label">Логин</string>
+    <string name="password_input_label">Пароль</string>
+    <string name="repeat_password_input_label">Подтвердите пароль</string>
+    <string name="first_name_input_label">Имя</string>
+    <string name="last_name_input_label">Фамилия</string>
+    <string name="phone_input_label">Телефон</string>
+    <string name="max_distance_option_label">Максимальное расстояние</string>
+    <string name="confirmation_code_input_label">Код подтверждения</string>
+    <string name="age_years_txt">%1$s лет</string>
+    <string name="born_at_txt">Родился: %1$s</string>
+    <string name="repeating_orders_count_label">%1$d повторных заказов</string>
+    <string name="online_label">В сети</string>
+    <string name="offline_label">Не в сети</string>
+    <string name="ordering_label">Сортировать по</string>
+    <string name="filters_label">Фильтры</string>
+    <string name="services_label">Сервисы</string>
+    <string name="user_service_label">Сервисы ассистента</string>
+    <string name="complaints_count_label">Количество жалоб</string>
+    <string name="status_label">Статус</string>
+    <string name="account_status_str">Статус: %1$s</string>
+    <string name="positive_label">Положительные</string>
+    <string name="date_period_label">Период</string>
+    <string name="date_selection_label">Выберите дату…</string>
+    <string name="date_period_end_label">Дата начала</string>
+    <string name="date_period_start_label">Дата окончания</string>
+    <string name="about_me_label">О себе</string>
+    <string name="more_label">Ещё</string>
+    <string name="less_label">Скрыть</string>
+    <string name="description_label">Описание</string>
+    <string name="name_label">Имя</string>
+    <string name="topic_label">Тема</string>
+    <string name="closed_label">Закрыт</string>
+    <string name="opened_channel_label">Открыт</string>
+    <string name="species_label">Вид</string>
+    <string name="breed_label">Порода</string>
+    <string name="age_label">Возраст</string>
+    <string name="weight_label">Вес</string>
+    <string name="medical_info_label">Дополнительная информация</string>
+    <string name="category_selection_label">Категория</string>
+    <string name="state_selection_label">Состояние</string>
+    <string name="success_label">Успешно!!!</string>
+    <string name="empty_label">Пусто</string>
+    <string name="required_label">* Обязательно</string>
+    <string name="title_label">Оглавление</string>
+    <string name="text_label">Текст</string>
+    <string name="type_label">Тип</string>
+    <string name="show_as_walker_label">Показать как ассистента</string>
+    <string name="are_sure_label">Вы уверены?</string>
+    <string name="confirm_delete_account_label">Продолжить удаление аккаунта?</string>
+    <string name="confirm_change_status_label">Продолжить изменение статуса на %1$s</string>
+    <string name="confirm_delete_assignment_label">Продолжить удаление объявления?</string>
+    <string name="confirm_delete_review_label">Продолжить удаление отзыва?</string>
+    <string name="confirm_delete_complaint_label">Продолжить удаление жалобы?</string>
+    <string name="confirm_delete_message_label">Продолжить удаление сообщения?</string>
+    <string name="confirm_delete_pet_label">Продолжить удаление питомца?</string>
+    <string name="confirm_delete_recruitment_label">Продолжить удаление заявки?</string>
+    <string name="confirm_logout_text_label">Продолжить выход из учетной записи?</string>
+
+    <string name="login_email_input_hint">Введите логин или почту…</string>
+    <string name="email_input_hint">Введите почту…</string>
+    <string name="login_input_hint">Введите логин…</string>
+    <string name="password_input_hint">Введите пароль…</string>
+    <string name="repeat_password_input_hint">Подтвердите пароль…</string>
+    <string name="first_name_input_hint">Введите имя…</string>
+    <string name="last_name_input_hint">Введите фамилию…</string>
+    <string name="phone_input_hint">Введите номер телефона…</string>
+    <string name="confirmation_code_input_hint">Ведите отправленный код…</string>
+    <string name="search_field_hint">Поиск</string>
+    <string name="name_search_field_hint">Введите название…</string>
+    <string name="species_search_field_hint">Введите вид…</string>
+    <string name="breed_search_field_hint">Введите породу…</string>
+    <string name="assign_pets_hint">Привязать питомцев…</string>
+    <string name="float_input_hint">Введите десятичное число…</string>
+    <string name="int_input_hint">Введите целое число…</string>
+    <string name="topic_input_hint">Введите тему…</string>
+    <string name="title_input_hint">Введите краткое описание главной идеи</string>
+    <string name="description_input_hint">Опишите детали…</string>
+    <string name="about_me_input_hint">Введите краткую сводку о себе</string>
+    <string name="commentary_input_string">Введите текст комментария…</string>
+    <string name="option_selection_hint">Выберите из предложенных вариантов…</string>
+
+    <string name="sign_in_btn_text">Войти</string>
+    <string name="sign_up_btn_text">Зарегистрироваться</string>
+    <string name="reload_btn_text">Перезагрузить</string>
+    <string name="forgot_password_btn_text">Забыли пароль?</string>
+    <string name="send_code_btn_txt">Отправить код</string>
+    <string name="confirm_btn_txt">Подтвердить</string>
+    <string name="change_password_btn_txt">Сменить пароль</string>
+    <string name="change_email_btn_txt">Сменить почту</string>
+    <string name="change_login_btn_txt">Сменить логин</string>
+    <string name="clear_btn_txt">Очистить</string>
+    <string name="cancel_btn_txt">Отмена</string>
+    <string name="done_btn_txt">Готово</string>
+    <string name="add_btn_txt">Добавить</string>
+    <string name="reviews_count_txt">%1$d отзывов</string>
+    <string name="complaints_count_txt">%1$d жалоб</string>
+    <string name="active_count_txt">%1$d активных</string>
+    <string name="solved_count_txt">%1$d решенных</string>
+    <string name="unread_messages_count_txt">%1$d Непрочитанных сообщений</string>
+    <string name="channel_id_txt">Канал %1$s</string>
+    <string name="see_assignment_btn_txt">Детали объявления</string>
+    <string name="see_walker_btn_txt">Детали ассистента</string>
+    <string name="track_walker_btn_txt">Отслеживание ассистента</string>
+    <string name="accept_btn_txt">Принять</string>
+    <string name="decline_btn_txt">Отклонить</string>
+    <string name="distance_from_user_txt">%1$s км от вас</string>
+    <string name="payment_dollar_txt">Оплата: %1$s $</string>
+    <string name="payment_rubbles_txt">Оплата: %1$s ₽</string>
+    <string name="weigh_txt">%1$s кг</string>
+    <string name="pet_description_label_txt">Информация о %1$s</string>
+    <string name="child_commentaries_count_txt">%1$s связанных комментариев</string>
+    <string name="date_edited_txt">Изменен: %1$s</string>
+    <string name="complete_btn_txt">Завершить</string>
+    <string name="close_btn_txt">Закрыть</string>
+    <string name="start_btn_txt">Начать</string>
+    <string name="leave_review_btn_txt">Оставить отзыв</string>
+    <string name="pick_location_btn_text">Устаночить локацию</string>
+    <string name="set_default_location_btn_text">Изменить локацию по умолчанию</string>
+
+    <string name="sign_up_link_txt">Еще не создали аккаунт?</string>
+    <string name="sign_in_link_txt">Уже создали аккаунт?</string>
+    <string name="back_link_txt">Назад</string>
+
+
+    <!--Error info -->
+    <string name="undefined_txt">Неизвестно</string>
+    <string name="max_amount_reached_error_txt">Максимальное значение достигнуто…</string>
+    <string name="passwords_match_error_txt">Значения не совпадают</string>
+    <string name="invalid_confirmation_code_error_txt">Неверный код подтверждения</string>
+    <string name="invalid_email_format_error_txt">Неверный формат почты</string>
+    <string name="invalid_phone_format_error_txt">Неверный формат телефона</string>
+    <string name="unauthorized_error_txt">Не авторизован</string>
+    <string name="nan_error_txt">Не число</string>
+    <string name="incorrect_length_least_error">Длина значения должна быть как минимум %1$d</string>
+    <string name="incorrect_length_max_error">Значение не должно превышать  %1$d количества символов</string>
+    <string name="login_taken_error_txt">Логин уже существует</string>
+    <string name="must_contain_least_numbers_error">Значение должно содержать как минимум %1$d чисел</string>
+    <string name="must_contain_least_letters_error">Значение должно содержать как минимум %1$d букв</string>
+    <string name="least_words_count_error_txt">Значение должно содержать как минимум %1$d слов</string>
+    <string name="must_contain_specials_error">Значение должно содержать спец. символы</string>
+    <string name="must_contain_uppercase">Значение должно содержать заглавные буквы</string>
+    <string name="must_contain_lowercase">Значение должно содержать прописные буквы</string>
+    <string name="loading_error_txt">При загрузке данных возникла непредвиденная ошибка</string>
+    <string name="sending_error_txt">Ошибка отправки данных…</string>
+    <string name="default_description_txt">Отсутствует описание</string>
+    <string name="empty_fields_error_txt">Не оставляйте поле пустым</string>
+    <string name="greater_than_error_txt">Значение должно превышать %1$d</string>
+    <string name="less_than_error_txt">Значение должно быть меньше %1$d</string>
+    <string name="early_error_error_txt">Слишком рано…</string>
+    <string name="date_less_than_error_txt">Дата должна быть раньше, чем %1$s</string>
+    <string name="file_already_exists_error_txt">Файл с таким именем уже существует</string>
+    <string name="file_not_found_error_txt">Файл с таким именем не найден</string>
+    <string name="cannot_access_file_error_txt">Не удалось получить доступ к указанным папке/файлу</string>
+    <string name="option_not_selected_error">Опция не выбрана</string>
+
+    <string name="request_time_out_error">Время ожидания ответа истекло</string>
+    <string name="unauthorized_error">Не авторизован</string>
+    <string name="conflict_error">Conflict occupied. Please, check the inputted data</string>
+    <string name="server_error">Ошибка сервера. Попробуйте позже.</string>
+    <string name="no_internet_error">Нестабильное подключение к интернету</string>
+    <string name="not_found_error">Данные не найдены.</string>
+    <string name="payload_too_large_data">Кажется, сервер не может обработать данные такого размера. Выберите менее объемные данные.</string>
+    <string name="serialization_error">Непредвиденный формат данных. Невозможно корректно интерпретировать.</string>
+    <string name="unknown_error">Извините, мы не можем вычислить ошибку. Попробуйте ещё раз позже</string>
+
+
+
+
+
+    <!--Enum displays-->
+    <string name="walkers_only_presentation_type_name">Только ассистенты</string>
+    <string name="assignments_only_presentation_type_name">Только объявления</string>
+    <string name="assignments_walkers_presentation_type_name">Объявления|Ассистенты</string>
+
+    <string name="rating_ordering_display_name">Рейтинг</string>
+    <string name="user_rating_ordering_display_name">Рейтинг владельца</string>
+    <string name="pet_count_ordering_display_name">Кол-во питомцев</string>
+    <string name="services_count_ordering_display_name">Кол-во сервисов</string>
+    <string name="location_ordering_display_name">Расстояние</string>
+
+    <string name="pending_status_display_name">Обработка</string>
+    <string name="verified_status_display_name">Подтвержден</string>
+    <string name="banned_status_display_name">Заблокирован</string>
+    <string name="active_status_display_name">Активно</string>
+    <string name="dismissed_status_display_name">Возвращнено</string>
+    <string name="solved_status_display_name">Решено</string>
+
+    <string name="accepted_state_display_name">Принято</string>
+    <string name="denied_state_display_name">Отклонено</string>
+
+    <string name="toxic_behaviour_topic_display_name">Некорректное поведение</string>
+    <string name="pet_harm_topic_display_name">Вред питомцам</string>
+
+    <string name="incoming_tab_display_name">Входящие</string>
+    <string name="outcoming_tab_display_name">Отправленные</string>
+
+    <string name="best_walker_tab_display_name">Лучший ассистент</string>
+    <string name="featured_walkers_tab_display_name">Популярные ассистенты</string>
+
+
+    <string name="info_tab_display_name">Детали</string>
+    <string name="assignment_pets_tab_display_name">Указанные питомцы</string>
+    <string name="walker_info_tab_display_name">Детали ассистента</string>
+    <string name="channel_tab_display_name">Канал</string>
+    <string name="reviews_tab_display_name">Отзывы</string>
+    <string name="assignments_history_tab_display_name">История объявлений</string>
+    <string name="complaints_tab_display_name">Жалобы</string>
+
+    <string name="assignment_stats_label">Статистика объявлений</string>
+    <string name="assignment_stats_amount_display_name">Количество</string>
+    <string name="assignment_stats_income_display_name">Доход</string>
+    <string name="assignment_stats_avgincome_display_name">Средний чек</string>
+
+    <string name="images_tab_display_name">Изображения</string>
+    <string name="attachments_tab_display_name">Дополнительные файлы</string>
+
+    <string name="boarding_service_display_name">Передержка</string>
+    <string name="walking_service_display_name">Выгул</string>
+    <string name="drop_In_service_display_name">Посещение</string>
+    <string name="house_Sitting_service_display_name">Присмотр</string>
+    <string name="other_service_display_name">Другое</string>
+
+    <string name="desired_payment_card_display_name">Карта</string>
+    <string name="desired_payment_cash_display_name">Наличные</string>
+    <string name="desired_payment_default_display_name">Нет предпочтений</string>
+
+
+    <string name="boarding_service_default_description">Обеспечивает комфортную и безопасную обстановку для передержки ваших питомцев.</string>
+    <string name="walking_service_default_description">Обеспечивает физическую активность и уход за питомцами, когда вы не можете из-за поездок, работы или др. обстоятельств.</string>
+    <string name="drop_In_service_default_description">Обеспечивает периодические посещения питомцев в домашних условиях, сопровождаемые качественным уходом, когда вы отсутствуете в течение длительного периода времени</string>
+    <string name="house_Sitting_service_default_description">Обеспечивает  разовые услуги по уходу за питомцами в знакомой обстановке.</string>
+    <string name="other_service_default_description">Информация о сервисе не указана. Пожалуйста, свяжитесь с ассистентом для получения подробностей.</string>
+
+    <string name="low_security_display_name">Не защищен</string>
+    <string name="middle_security_display_name">Достаточно защищен</string>
+    <string name="high_security_display_name">Полностью защищен</string>
+
+    <string name="low_security_description">Подумайте об использовании возможностей приложения по сохранению учётной записи. Например, привязка почты.</string>
+    <string name="middle_security_description">Ваша учётная запись достаточно защищена относительно возможностей приложения. Однако, можете подумать о смене устоявшегося пароля.</string>
+    <string name="high_security_description">Ваш аккаунт надёжно защищён относительно возможностей приложения.</string>
+
+    <string name="security_label">Безопасность</string>
+    <string name="show_statistics">Статистика</string>
+    <string name="edit_info_label">Изменить информацию</string>
+    <string name="exit_account_label">Выйти из учётной записи</string>
+    <string name="delete_account_label">Удалить учётную запись</string>
+
+    <string name="owner_option_display_name">Владелец</string>
+
+    <string name="all_option_display_name">Все</string>
+    <string name="last_year_option_display_name">Последний год</string>
+    <string name="last_month_option_display_name">Последний месяц</string>
+    <string name="last_week_option_display_name">Последняя неделя</string>
+    <string name="today_option_display_name">Сегодня</string>
+
+    <string name="searching_state_display_name">Поиск</string>
+    <string name="in_progress_state_display_name">Исполняется</string>
+    <string name="booked_state_display_name">Зарезервирован</string>
+    <string name="completed_state_display_name">Завершен</string>
+
+    <string name="discussion_type_display_name">Отображаемое название</string>
+    <string name="video_type_display_name">Видео</string>
+    <string name="story_type_display_name">История</string>
+    <string name="advice_help_type_display_name">Совет/Помощь</string>
+
+    <string name="vaccination_info_display_name">Вакцинация</string>
+    <string name="allergy_info_display_name">Аллергия</string>
+    <string name="meds_info_display_name">Лекарства</string>
+
+    <string name="date_ordering_display_name">Дата</string>
+    <string name="live_lines_ordering_display_name">Кол-во комментариев</string>
+    <string name="thumbs_ordering_display_name">Продвижения</string>
+    <string name="popularity_ordering_display_name">Популярность</string>
+
+    <string name="time_ordering_display_name">Время</string>
+</resources>

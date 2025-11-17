@@ -6,6 +6,7 @@ import com.zeafen.petwalker.domain.models.api.other.ServiceType
 import com.zeafen.petwalker.domain.models.api.pets.Pet
 import com.zeafen.petwalker.domain.models.api.util.APIResult
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 
@@ -30,7 +31,9 @@ data class AssignmentConfigureUiState(
     ),
     val assignmentType: ServiceType? = null,
     val assignmentDescription: String = "",
+
     val assignmentDate: LocalDateTime? = null,
+    val assignmentTime: LocalTime = LocalTime(0, 0),
     val dateValidation: ValidationInfo = ValidationInfo(
         false,
         Res.string.empty_fields_error_txt,

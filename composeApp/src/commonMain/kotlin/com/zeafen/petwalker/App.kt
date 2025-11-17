@@ -124,6 +124,7 @@ fun App() {
                             NavigationRoutes.SignIn.toString(),
                             NavigationRoutes.SignUp.toString(),
                             NavigationRoutes.Authorise.toString(),
+                            NavigationRoutes.ForgotPasswordPage.toString(),
                         ) ?: true)
                     )
                         PetWalkerBottomBar(
@@ -285,9 +286,7 @@ fun App() {
                                         }
                                     },
                                     onGoToForgotPasswordClick = {
-                                        navController.navigate(NavigationRoutes.SignIn) {
-                                            popUpTo(NavigationRoutes.AuthNavigation)
-                                        }
+                                        navController.navigate(NavigationRoutes.ForgotPasswordPage)
                                     }
                                 )
                             else LoadingResultPage(
@@ -321,11 +320,7 @@ fun App() {
                             else LoadingResultPage(
                                 state = state.result!!,
                                 onSuccessResult = {
-                                    navController.navigate(NavigationRoutes.HomePage) {
-                                        popUpTo(NavigationRoutes.AuthNavigation) {
-                                            inclusive = true
-                                        }
-                                    }
+                                    navController.navigateUp()
                                 },
                                 onReloadAfterError = { viewModel.onEvent(ForgotPasswordUiEvent.ClearResult) }
                             )
@@ -404,12 +399,17 @@ fun App() {
                             val exitAccount by viewModel.exitAccount.collectAsStateWithLifecycle()
 
                             LaunchedEffect(exitAccount) {
-                                if (exitAccount)
+                                if (exitAccount) {
+                                    navController.popBackStack(
+                                        NavigationRoutes.ProfileNavigation,
+                                        true
+                                    )
                                     navController.navigate(NavigationRoutes.AuthNavigation) {
                                         popUpTo<NavigationRoutes.AuthNavigation> {
                                             inclusive = true
                                         }
                                     }
+                                }
                             }
 
                             PullToRefreshBox(
@@ -576,6 +576,21 @@ fun App() {
                                             it
                                         )
                                     )
+                                },
+                                onEditComplaintClick = {
+                                    navController.navigate(
+                                        NavigationRoutes.ComplaintConfigurePage(
+                                            it,
+                                            id
+                                        )
+                                    )
+                                },
+                                onEditReviewClick = { reviewId, assignmentId ->
+                                    navController.navigate(
+                                        NavigationRoutes.ReviewConfigurePage(
+                                            reviewId, assignmentId
+                                        )
+                                    )
                                 }
                             )
                         }
@@ -595,7 +610,19 @@ fun App() {
                             }
 
                             val state by viewModel.state.collectAsStateWithLifecycle()
-                            ComplaintConfigurePage(
+
+                            if (state.complaintLoadingResult != null)
+                                LoadingResultPage(
+                                    state = state.complaintLoadingResult!!,
+                                    onSuccessResult = { viewModel.onEvent(ComplaintConfigureUiEvent.ClearResult) },
+                                    onGoBackClick = { navController.navigateUp() },
+                                    onReloadAfterError = {
+                                        viewModel.onEvent(
+                                            ComplaintConfigureUiEvent.ClearResult
+                                        )
+                                    }
+                                )
+                            else ComplaintConfigurePage(
                                 state = state,
                                 onEvent = viewModel::onEvent,
                                 onCancelClick = { navController.navigateUp() }
@@ -712,7 +739,19 @@ fun App() {
                             }
 
                             val state by viewModel.state.collectAsStateWithLifecycle()
-                            AssignmentConfigurePage(
+
+                            if (state.publishingResult != null)
+                                LoadingResultPage(
+                                    state = state.publishingResult!!,
+                                    onSuccessResult = { viewModel.onEvent(AssignmentConfigureUiEvent.ClearResult) },
+                                    onGoBackClick = { navController.navigateUp() },
+                                    onReloadAfterError = {
+                                        viewModel.onEvent(
+                                            AssignmentConfigureUiEvent.ClearResult
+                                        )
+                                    }
+                                )
+                            else AssignmentConfigurePage(
                                 state = state,
                                 onEvent = viewModel::onEvent,
                                 onBackClick = { navController.navigateUp() },
@@ -751,7 +790,18 @@ fun App() {
 
                             val state by viewModel.state.collectAsStateWithLifecycle()
 
-                            ReviewConfigurePage(
+                            if (state.reviewLoadingResult != null)
+                                LoadingResultPage(
+                                    state = state.reviewLoadingResult!!,
+                                    onSuccessResult = { viewModel.onEvent(ReviewConfigureUiEvent.ClearResult) },
+                                    onGoBackClick = { navController.navigateUp() },
+                                    onReloadAfterError = {
+                                        viewModel.onEvent(
+                                            ReviewConfigureUiEvent.ClearResult
+                                        )
+                                    }
+                                )
+                            else ReviewConfigurePage(
                                 state = state,
                                 onEvent = viewModel::onEvent,
                                 onCancelClick = { navController.navigateUp() }
@@ -846,7 +896,18 @@ fun App() {
                             }
 
                             val state by viewModel.state.collectAsStateWithLifecycle()
-                            PetConfigurePage(
+                            if (state.petLoadingResult != null)
+                                LoadingResultPage(
+                                    state = state.petLoadingResult!!,
+                                    onSuccessResult = { viewModel.onEvent(PetConfigureUiEvent.ClearResult) },
+                                    onGoBackClick = { navController.navigateUp() },
+                                    onReloadAfterError = {
+                                        viewModel.onEvent(
+                                            PetConfigureUiEvent.ClearResult
+                                        )
+                                    }
+                                )
+                            else PetConfigurePage(
                                 state = state,
                                 onEvent = viewModel::onEvent,
                                 onBackClick = { navController.navigateUp() }

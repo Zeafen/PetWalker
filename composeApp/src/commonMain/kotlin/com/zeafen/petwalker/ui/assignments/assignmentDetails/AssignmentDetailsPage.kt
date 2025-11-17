@@ -143,19 +143,6 @@ fun AssignmentDetailsPage(
                                 DropdownMenuItem(
                                     text = {
                                         Text(
-                                            text = stringResource(Res.string.pending_status_display_name),
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    },
-                                    onClick = {
-                                        selectedStatus = AssignmentState.Pending
-                                        openStatusSelectionMenu = false
-                                        openConfirmChangeStatusDialog = true
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
                                             text = stringResource(Res.string.search_field_hint),
                                             style = MaterialTheme.typography.bodyLarge
                                         )
@@ -253,6 +240,8 @@ fun AssignmentDetailsPage(
             ) { index ->
                 when (AssignmentDetailsTabs.entries[index]) {
                     AssignmentDetailsTabs.Info -> PullToRefreshBox(
+                        modifier = Modifier
+                            .padding(4.dp),
                         isRefreshing = state.assignment is APIResult.Downloading,
                         onRefresh = {
                             state.selectedAssignmentId?.let {
@@ -272,6 +261,8 @@ fun AssignmentDetailsPage(
                     }
 
                     AssignmentDetailsTabs.Pets -> PullToRefreshBox(
+                        modifier = Modifier
+                            .padding(4.dp),
                         isRefreshing = state.assignmentPets is APIResult.Downloading,
                         onRefresh = { onEvent(AssignmentDetailsUiEvent.LoadPets(state.lastSelectedPetPage)) }
                     ) {
@@ -285,6 +276,8 @@ fun AssignmentDetailsPage(
 
                     AssignmentDetailsTabs.WalkerInfo -> {
                         PullToRefreshBox(
+                            modifier = Modifier
+                                .padding(4.dp),
                             isRefreshing = state.assignmentWalker is APIResult.Downloading,
                             onRefresh = { onEvent(AssignmentDetailsUiEvent.LoadWalker) }
                         ) {
@@ -324,6 +317,8 @@ fun AssignmentDetailsPage(
 
                     AssignmentDetailsTabs.Channel ->
                         PullToRefreshBox(
+                            modifier = Modifier
+                                .padding(4.dp),
                             isRefreshing = state.assignmentChannel is APIResult.Downloading,
                             onRefresh = { onEvent(AssignmentDetailsUiEvent.LoadChannel) }
                         ) {

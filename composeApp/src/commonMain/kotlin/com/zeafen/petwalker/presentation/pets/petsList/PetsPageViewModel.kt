@@ -41,7 +41,7 @@ class PetsPageViewModel(
 
                     petsLoadingJob = launch {
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(pets = APIResult.Error(NetworkError.UNAUTHORIZED))
                             }

@@ -39,7 +39,7 @@ import com.zeafen.petwalker.ui.standard.elements.PetWalkerTextInput
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
-import petwalker.composeapp.generated.resources.back_to_login_link_txt
+import petwalker.composeapp.generated.resources.back_link_txt
 import petwalker.composeapp.generated.resources.change_password_btn_txt
 import petwalker.composeapp.generated.resources.confirm_btn_txt
 import petwalker.composeapp.generated.resources.confirmation_code_input_hint
@@ -132,7 +132,7 @@ fun ForgotPasswordPage(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentWidth(),
-                        text = stringResource(Res.string.back_to_login_link_txt),
+                        text = stringResource(Res.string.back_link_txt),
                         onClick = onGoBackClick
                     )
                 }
@@ -188,7 +188,7 @@ fun ForgotPasswordFields_Stage2(
             onValueChanged = { onEvent(ForgotPasswordUiEvent.EnterCode(it)) },
             value = forgotPasswState.code,
             supportingText =
-                if (forgotPasswState.code.isNotBlank())
+                if (forgotPasswState.code.isBlank())
                     stringResource(Res.string.invalid_confirmation_code_error_txt)
                 else null,
             leadingIcon = painterResource(Res.drawable.ic_password),
@@ -236,7 +236,7 @@ fun ForgotPasswordFields_Stage3(
             onValueChanged = { onEvent(ForgotPasswordUiEvent.EnterRepeatPassword(it)) },
             value = forgotPasswState.repeatPassword,
             isError = !forgotPasswState.passwordsMatch,
-            supportingText = if (forgotPasswState.passwordsMatch)
+            supportingText = if (!forgotPasswState.passwordsMatch)
                 stringResource(Res.string.passwords_match_error_txt)
             else null,
             leadingIcon = painterResource(Res.drawable.ic_password),

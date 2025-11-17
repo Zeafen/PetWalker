@@ -150,7 +150,7 @@ class PostDetailsViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     commentariesLoadingError = NetworkError.UNAUTHORIZED,
@@ -227,7 +227,7 @@ class PostDetailsViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(post = APIResult.Error(NetworkError.UNAUTHORIZED))
                         }
@@ -271,7 +271,7 @@ class PostDetailsViewModel(
                                     return@launch
 
                                 val token = authDataStore.authDataStoreFlow.first().token
-                                if (token == null) {
+                                if (token == null || token.accessToken.isBlank()) {
                                     _state.update {
                                         it.copy(
                                             sendingCommentaryResult = ValidationInfo(

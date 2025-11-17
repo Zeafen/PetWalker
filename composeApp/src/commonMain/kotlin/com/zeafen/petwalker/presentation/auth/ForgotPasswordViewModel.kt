@@ -51,7 +51,8 @@ class ForgotPasswordViewModel(
             .onEach { state ->
                 _state.update {
                     it.copy(
-                        passwordValid = state.password.isValidPassword()
+                        passwordValid = state.password.isValidPassword(),
+                        passwordsMatch = state.password == state.repeatPassword
                     )
                 }
             }

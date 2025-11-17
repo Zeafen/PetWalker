@@ -2,18 +2,19 @@ package com.zeafen.petwalker.presentation.reviews.complaintConfigure
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zeafen.petwalker.data.helpers.calculateDistance
 import com.zeafen.petwalker.data.helpers.countWords
 import com.zeafen.petwalker.domain.models.ValidationInfo
 import com.zeafen.petwalker.domain.models.api.assignments.Assignment
 import com.zeafen.petwalker.domain.models.api.other.PagedResult
 import com.zeafen.petwalker.domain.models.api.reviews.ComplaintRequest
 import com.zeafen.petwalker.domain.models.api.util.APIResult
+import com.zeafen.petwalker.domain.models.api.util.APIResult.Downloading
+import com.zeafen.petwalker.domain.models.api.util.APIResult.Error
+import com.zeafen.petwalker.domain.models.api.util.APIResult.Succeed
 import com.zeafen.petwalker.domain.models.api.util.NetworkError
 import com.zeafen.petwalker.domain.models.ui.AssignmentModel
 import com.zeafen.petwalker.domain.services.AssignmentsRepository
 import com.zeafen.petwalker.domain.services.AuthDataStoreRepository
-import com.zeafen.petwalker.domain.services.LocationService
 import com.zeafen.petwalker.domain.services.ReviewsRepository
 import com.zeafen.petwalker.domain.services.UsersRepository
 import kotlinx.coroutines.Job
@@ -34,15 +35,14 @@ import kotlinx.coroutines.sync.withLock
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.incorrect_length_least_error
+import petwalker.composeapp.generated.resources.incorrect_length_max_error
 import petwalker.composeapp.generated.resources.least_words_count_error_txt
-import petwalker.composeapp.generated.resources.length_max_error
 
 class ComplaintConfigureViewModel(
     private val usersRepository: UsersRepository,
     private val reviewsRepository: ReviewsRepository,
     private val assignmentsRepository: AssignmentsRepository,
-    private val authDataStore: AuthDataStoreRepository,
-    private val locationService: LocationService
+    private val authDataStore: AuthDataStoreRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<ComplaintConfigureUiState> = MutableStateFlow(
@@ -72,7 +72,7 @@ class ComplaintConfigureViewModel(
                                     listOf(51)
                                 )
 
-                            value.complaintDetails.countWords() > 5 && value.complaintDetails.length > 50 ->
+                            value.complaintDetails.countWords() < 5 && value.complaintDetails.length > 50 ->
                                 ValidationInfo(
                                     false,
                                     Res.string.least_words_count_error_txt,
@@ -82,7 +82,7 @@ class ComplaintConfigureViewModel(
                             value.complaintDetails.length > 500 ->
                                 ValidationInfo(
                                     false,
-                                    Res.string.length_max_error,
+                                    Res.string.incorrect_length_max_error,
                                     listOf(500)
                                 )
 
@@ -105,11 +105,7 @@ class ComplaintConfigureViewModel(
             }
             .launchIn(viewModelScope)
 
-        locationService.startObserving()
-    }
-
-    override fun onCleared() {
-        locationService.cancelObserving()
+        onEvent(ComplaintConfigureUiEvent.LoadOwnAssignments(1))
     }
 
 
@@ -121,18 +117,18 @@ class ComplaintConfigureViewModel(
                 is ComplaintConfigureUiEvent.InitializeComplaint -> {
                     _state.update {
                         it.copy(
-                            complaintLoadingResult = APIResult.Downloading(),
-                            reviewedWalkerLoadingRes = APIResult.Downloading(),
-                            selectedComplaintId = event.complaintId
+                            complaintLoadingResult = Downloading(),
+                            selectedComplaintId = event.complaintId,
+                            reviewedWalkerId = event.walkerId
                         )
                     }
 
                     when {
                         event.complaintId != null -> {
                             val token = authDataStore.authDataStoreFlow.first().token
-                            if (token == null) {
+                            if (token == null || token.accessToken.isBlank()) {
                                 _state.update {
-                                    it.copy(complaintLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED))
+                                    it.copy(complaintLoadingResult = Error(NetworkError.UNAUTHORIZED))
                                 }
                                 return@launch
                             }
@@ -147,7 +143,7 @@ class ComplaintConfigureViewModel(
                                 }
                                 _state.update {
                                     it.copy(
-                                        complaintLoadingResult = APIResult.Succeed(),
+                                        complaintLoadingResult = Succeed(),
                                         complaintDetails = complaint.data?.body ?: "",
                                         complaintTopic = complaint.data?.topic,
                                     )
@@ -155,7 +151,7 @@ class ComplaintConfigureViewModel(
                             } else
                                 _state.update {
                                     it.copy(
-                                        complaintLoadingResult = APIResult.Error((complaint as APIResult.Error).info)
+                                        complaintLoadingResult = Error((complaint as APIResult.Error).info)
                                     )
                                 }
                         }
@@ -163,7 +159,7 @@ class ComplaintConfigureViewModel(
                         else -> {
                             if (event.walkerId.isBlank()) {
                                 _state.update {
-                                    it.copy(complaintLoadingResult = APIResult.Error(NetworkError.NOT_FOUND))
+                                    it.copy(complaintLoadingResult = Error(NetworkError.NOT_FOUND))
                                 }
                                 return@launch
                             }
@@ -171,7 +167,7 @@ class ComplaintConfigureViewModel(
                                 it.copy(
                                     complaintDetails = "",
                                     complaintTopic = null,
-                                    complaintLoadingResult = APIResult.Succeed()
+                                    complaintLoadingResult = Succeed()
                                 )
                             }
 
@@ -186,14 +182,14 @@ class ComplaintConfigureViewModel(
 
                     ownAssignmentsLoadingJob = launch {
                         _state.update {
-                            it.copy(ownLoadedAssignments = APIResult.Downloading())
+                            it.copy(ownLoadedAssignments = Downloading())
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
-                                    ownLoadedAssignments = APIResult.Error(NetworkError.UNAUTHORIZED)
+                                    ownLoadedAssignments = Error(NetworkError.UNAUTHORIZED)
                                 )
                             }
                             return@launch
@@ -204,7 +200,7 @@ class ComplaintConfigureViewModel(
                         )
                         if (assignments is APIResult.Error) {
                             _state.update {
-                                it.copy(ownLoadedAssignments = APIResult.Error(assignments.info))
+                                it.copy(ownLoadedAssignments = Error(assignments.info))
                             }
                             return@launch
                         }
@@ -217,7 +213,7 @@ class ComplaintConfigureViewModel(
 
                         _state.update {
                             it.copy(
-                                ownLoadedAssignments = APIResult.Succeed(
+                                ownLoadedAssignments = Succeed(
                                     PagedResult(
                                         result = models.awaitAll().toList(),
                                         totalPages = assignments.data!!.totalPages,
@@ -233,18 +229,24 @@ class ComplaintConfigureViewModel(
 
                 ComplaintConfigureUiEvent.PublishComplaint -> {
                     inputMutex.withLock {
-                        if (!state.value.canPublish || state.value.complaintLoadingResult is APIResult.Downloading)
+                        if (!state.value.canPublish || state.value.complaintLoadingResult is APIResult.Downloading) {
+                            _state.update {
+                                it.copy(
+                                    complaintLoadingResult = Error(NetworkError.CONFLICT)
+                                )
+                            }
                             return@launch
+                        }
                         _state.update {
-                            it.copy(complaintLoadingResult = APIResult.Downloading())
+                            it.copy(complaintLoadingResult = Downloading())
                         }
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
-                                complaintLoadingResult = APIResult.Error(NetworkError.UNAUTHORIZED)
+                                complaintLoadingResult = Error(NetworkError.UNAUTHORIZED)
                             )
                         }
                         return@launch
@@ -256,7 +258,7 @@ class ComplaintConfigureViewModel(
                         state.value.selectedAssignment?.id
                     )
                     when {
-                        state.value.selectedComplaintId != null -> {
+                        state.value.selectedComplaintId == null -> {
                             val result = reviewsRepository.postComplaint(
                                 state.value.reviewedWalkerId,
                                 request
@@ -265,13 +267,14 @@ class ComplaintConfigureViewModel(
                             if (result is APIResult.Error) {
                                 _state.update {
                                     it.copy(
-                                        complaintLoadingResult = APIResult.Error(result.info)
+                                        complaintLoadingResult = Error(result.info)
                                     )
                                 }
+                                return@launch
                             }
                             _state.update {
                                 it.copy(
-                                    complaintLoadingResult = APIResult.Succeed(),
+                                    complaintLoadingResult = Succeed(),
                                     selectedComplaintId = (result as APIResult.Succeed).data!!.id
                                 )
                             }
@@ -329,6 +332,15 @@ class ComplaintConfigureViewModel(
                         }
                     }
                 }
+
+                ComplaintConfigureUiEvent.ClearResult -> {
+                    if (state.value.complaintLoadingResult !is APIResult.Downloading)
+                        inputMutex.withLock {
+                            _state.update {
+                                it.copy(complaintLoadingResult = null)
+                            }
+                        }
+                }
             }
         }
     }
@@ -338,7 +350,7 @@ class ComplaintConfigureViewModel(
             return
 
         val token = authDataStore.authDataStoreFlow.first().token
-        if (token == null) {
+        if (token == null || token.accessToken.isBlank()) {
             _state.update {
                 it.copy(
                     reviewedWalkerLoadingRes = APIResult.Error(NetworkError.UNAUTHORIZED),
@@ -371,8 +383,6 @@ class ComplaintConfigureViewModel(
     private suspend fun getModelForAssignment(
         assignment: Assignment
     ): AssignmentModel {
-
-        val location = locationService.location.first()
         val ownerInfo = usersRepository.getWalker(assignment.ownerId)
 
         return AssignmentModel(
@@ -388,7 +398,7 @@ class ComplaintConfigureViewModel(
             assignment.datePublished,
             assignment.dateTime,
             assignment.location,
-            location?.calculateDistance(assignment.location)?.toFloat(),
+            null,
             assignment.payment
         )
 

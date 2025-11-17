@@ -6,6 +6,7 @@ import com.zeafen.petwalker.data.helpers.calculateDistance
 import com.zeafen.petwalker.domain.models.api.assignments.Assignment
 import com.zeafen.petwalker.domain.models.api.assignments.RecruitmentRequest
 import com.zeafen.petwalker.domain.models.api.filtering.AssignmentsOrdering
+import com.zeafen.petwalker.domain.models.api.filtering.DatePeriods
 import com.zeafen.petwalker.domain.models.api.other.PagedResult
 import com.zeafen.petwalker.domain.models.api.reviews.Complaint
 import com.zeafen.petwalker.domain.models.api.reviews.Review
@@ -83,7 +84,7 @@ class WalkerDetailsViewModel(
                         }
 
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     walker = Downloading()
@@ -137,7 +138,7 @@ class WalkerDetailsViewModel(
                             return@launch
                         }
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     walkerAssignments = Error(
@@ -206,7 +207,7 @@ class WalkerDetailsViewModel(
                             return@launch
                         }
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     walkerReviews = Error(
@@ -250,12 +251,12 @@ class WalkerDetailsViewModel(
                             )
                         }
                     }
-
+                    onEvent(WalkerDetailsPageUiEvent.LoadWalkerReviewsStats)
                 }
 
                 WalkerDetailsPageUiEvent.LoadWalkerReviewsStats -> {
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 walkerReviewsStats = Error(
@@ -328,6 +329,11 @@ class WalkerDetailsViewModel(
                                 && state.value.walkerAssignments !is APIResult.Succeed
                                 && walkerAssignmentsLoadingJob?.isActive != true -> {
                             onEvent(WalkerDetailsPageUiEvent.LoadWalkerAssignment())
+                            onEvent(
+                                WalkerDetailsPageUiEvent.LoadAssignmentsAssignmentsStats(
+                                    DatePeriods.All
+                                )
+                            )
                         }
                     }
                 }
@@ -361,7 +367,7 @@ class WalkerDetailsViewModel(
                             return@launch
                         }
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(
                                     walkerComplaints = Error(
@@ -387,6 +393,7 @@ class WalkerDetailsViewModel(
                             }
                             return@launch
                         }
+
                         val models = (complaints as APIResult.Succeed).data!!.result.map {
                             async { getModelForComplaint(it) }
                         }
@@ -403,12 +410,16 @@ class WalkerDetailsViewModel(
                                 )
                             )
                         }
+
+                        onEvent(WalkerDetailsPageUiEvent.LoadWalkerComplaintsStats)
                     }
                 }
 
                 WalkerDetailsPageUiEvent.LoadWalkerComplaintsStats -> {
+                    _state.update { it.copy(walkerComplaintsStats = APIResult.Downloading()) }
+
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 walkerComplaintsStats = Error(
@@ -458,7 +469,7 @@ class WalkerDetailsViewModel(
                     }
 
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(recruitingResult = Error(NetworkError.UNAUTHORIZED))
                         }
@@ -490,7 +501,7 @@ class WalkerDetailsViewModel(
 
                     availableAssignmentsLoadingJob = launch {
                         val token = authDataStore.authDataStoreFlow.first().token
-                        if (token == null) {
+                        if (token == null || token.accessToken.isBlank()) {
                             _state.update {
                                 it.copy(availableAssignments = Error(NetworkError.UNAUTHORIZED))
                             }
@@ -530,7 +541,7 @@ class WalkerDetailsViewModel(
 
                 is WalkerDetailsPageUiEvent.LoadAssignmentsAssignmentsStats -> {
                     val token = authDataStore.authDataStoreFlow.first().token
-                    if (token == null) {
+                    if (token == null || token.accessToken.isBlank()) {
                         _state.update {
                             it.copy(
                                 walkerComplaintsStats = Error(
@@ -558,6 +569,50 @@ class WalkerDetailsViewModel(
                             ),
                             assignmentsStatsDatePeriod = event.period
                         )
+                    }
+                }
+
+                is WalkerDetailsPageUiEvent.DeleteWalkerComplaint -> {
+                    if (walkerComplaintsLoadingJob?.isActive == true)
+                        walkerComplaintsLoadingJob?.cancel()
+
+                    walkerComplaintsLoadingJob = launch {
+                        _state.update {
+                            it.copy(walkerComplaints = APIResult.Downloading())
+                        }
+
+                        val result = reviewsRepository.deleteComplaint(event.id)
+                        _state.update {
+                            it.copy(
+                                walkerComplaints = if (result is APIResult.Error) APIResult.Error(
+                                    result.info,
+                                    result.additionalInfo
+                                ) else APIResult.Downloading()
+                            )
+                        }
+                        onEvent(WalkerDetailsPageUiEvent.LoadWalkerComplaints(state.value.selectedComplaintsPage))
+                    }
+                }
+
+                is WalkerDetailsPageUiEvent.DeleteWalkerReview -> {
+                    if (walkerReviewsLoadingJob?.isActive == true)
+                        walkerReviewsLoadingJob?.cancel()
+
+                    walkerReviewsLoadingJob = launch {
+                        _state.update {
+                            it.copy(walkerReviews = APIResult.Downloading())
+                        }
+
+                        val result = reviewsRepository.deleteReview(event.id)
+                        _state.update {
+                            it.copy(
+                                walkerReviews = if (result is APIResult.Error) APIResult.Error(
+                                    result.info,
+                                    result.additionalInfo
+                                ) else APIResult.Downloading()
+                            )
+                        }
+                        onEvent(WalkerDetailsPageUiEvent.LoadWalkerReviews(state.value.selectedReviewsPage))
                     }
                 }
             }
@@ -598,9 +653,10 @@ class WalkerDetailsViewModel(
                 "${user.firstName} ${user.lastName}",
                 review.assignmentId,
                 review.text,
+                review.isOwn,
                 review.rating,
                 review.datePosted,
-                review.dateUpdated
+                review.dateUpdated,
             )
         }
         else null
@@ -620,7 +676,8 @@ class WalkerDetailsViewModel(
                 complaint.status,
                 complaint.body,
                 complaint.datePosted,
-                complaint.dateSolved
+                complaint.dateSolved,
+                isOwn = complaint.isOwn
             )
         }
         else null
