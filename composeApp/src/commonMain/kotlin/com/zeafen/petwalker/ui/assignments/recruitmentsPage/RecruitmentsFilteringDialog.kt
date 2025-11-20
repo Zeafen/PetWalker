@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,7 +77,7 @@ fun RecruitmentsFilteringDialog(
             )
         )
     }
-    var dateFromOption by rememberSaveable {
+    var dateFromOption by remember {
         mutableStateOf(
             2 to FilterOption(
                 name = Res.string.date_period_start_label,
@@ -86,7 +85,7 @@ fun RecruitmentsFilteringDialog(
             )
         )
     }
-    var dateToOption by rememberSaveable {
+    var dateToOption by remember {
         mutableStateOf(
             3 to FilterOption(
                 name = Res.string.date_period_end_label,

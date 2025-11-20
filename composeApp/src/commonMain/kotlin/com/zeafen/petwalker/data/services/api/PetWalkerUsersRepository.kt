@@ -43,7 +43,10 @@ class PetWalkerUsersRepository(
             client.get(BASE_URL + "users") {
                 parameter("page", page)
                 parameter("perPage", perPage)
-                parameter("location", locationInfo)
+                locationInfo?.let {
+                    parameter("location.longitude", locationInfo.longitude)
+                    parameter("location.latitude", locationInfo.latitude)
+                }
                 parameter("maxDistance", maxDistance)
                 parameter("name", name)
                 parameter("services", services)

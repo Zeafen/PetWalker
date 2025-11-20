@@ -16,7 +16,6 @@ import com.zeafen.petwalker.domain.services.UsersRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -116,7 +115,7 @@ class WalkersPageViewModel(
                                     walkers = APIResult.Error(
                                         walkers.info,
                                         walkers.additionalInfo
-                                    )
+                                    ),
                                 )
                             }
                             return@launch
@@ -188,7 +187,8 @@ class WalkersPageViewModel(
                     APILocation(loc.latitude, loc.longitude)
                 )
             }?.toFloat(),
-            walker.desiredPayment
+            walker.desiredPayment,
+            walker.services
         )
     }
 }

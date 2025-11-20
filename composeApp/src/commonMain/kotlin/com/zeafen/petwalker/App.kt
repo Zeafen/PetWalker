@@ -363,12 +363,12 @@ fun App() {
                                     onGoToOwnPets = { navController.navigate(NavigationRoutes.PetsPage) },
                                     onGoToRecruitmentsAsOwner = {
                                         navController.navigate(
-                                            NavigationRoutes.RecruitmentsPage(RecruitmentsLoadGroup.AsOwner)
+                                            NavigationRoutes.RecruitmentsPage(true)
                                         )
                                     },
                                     onGoToRecruitmentsAsWalker = {
                                         navController.navigate(
-                                            NavigationRoutes.RecruitmentsPage(RecruitmentsLoadGroup.AsWalker)
+                                            NavigationRoutes.RecruitmentsPage(false)
                                         )
                                     },
                                     onGoToAssignments = {
@@ -444,11 +444,19 @@ fun App() {
                             val viewModel = koinViewModel<RecruitmentsPageViewModel>(
                                 viewModelStoreOwner = parentEntry
                             )
-                            val selectedGroup =
-                                it.toRoute<NavigationRoutes.RecruitmentsPage>().initialTab
+                            val loadAsOwner =
+                                it.toRoute<NavigationRoutes.RecruitmentsPage>().loadAsOwner
 
                             LaunchedEffect(Unit) {
-                                viewModel.onEvent(RecruitmentsPageUiEvent.SetFilters(selectedGroup))
+                                viewModel.onEvent(
+                                    RecruitmentsPageUiEvent.SetFilters(
+                                        when (loadAsOwner) {
+                                            true -> RecruitmentsLoadGroup.AsOwner
+                                            false -> RecruitmentsLoadGroup.AsWalker
+                                            null -> RecruitmentsLoadGroup.All
+                                        }
+                                    )
+                                )
                             }
 
                             val state by viewModel.state.collectAsStateWithLifecycle()
@@ -712,6 +720,13 @@ fun App() {
                                     navController.navigate(
                                         NavigationRoutes.ReviewConfigurePage(
                                             null,
+                                            it
+                                        )
+                                    )
+                                },
+                                onGoToPetClick = {
+                                    navController.navigate(
+                                        NavigationRoutes.PetInfoPage(
                                             it
                                         )
                                     )

@@ -143,7 +143,8 @@ class AssignmentsViewModel(
                                         totalPages = assignments.data.totalPages,
                                         currentPage = assignments.data.currentPage
                                     )
-                                )
+                                ),
+                                lastSelectedPage = assignments.data.currentPage
                             )
                         }
                     }

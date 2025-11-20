@@ -32,7 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,7 +50,6 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.are_sure_label
-import petwalker.composeapp.generated.resources.confirm_delete_assignment_label
 import petwalker.composeapp.generated.resources.confirm_delete_complaint_label
 import petwalker.composeapp.generated.resources.confirm_delete_review_label
 import petwalker.composeapp.generated.resources.ic_go_back
@@ -71,7 +69,7 @@ fun WalkerDetailsPage(
     onEditComplaintClick: (String) -> Unit,
     onEditReviewClick: (id: String, assignmentId: String) -> Unit
 ) {
-    var openRecruitingDialog by rememberSaveable {
+    var openRecruitingDialog by remember {
         mutableStateOf(false)
     }
 
@@ -301,6 +299,11 @@ fun WalkerDetailsPage(
                     onDismissRequest = { popupContent = null }
                 ) {
                     Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+                            .padding(8.dp),
+                        color = MaterialTheme.colorScheme.onTertiaryContainer,
                         text = stringResource(popupContent!!),
                         style = MaterialTheme.typography.bodyLarge
                     )

@@ -41,7 +41,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -89,17 +88,17 @@ fun ProfilePage(
     onGoToEditPasswordScreen: () -> Unit,
     onGoToSetDefaultLocationScreen: () -> Unit
 ) {
-    var selectedServiceId by rememberSaveable {
+    var selectedServiceId by remember {
         mutableStateOf<String?>(null)
     }
-    var openServiceConfigureDialog by rememberSaveable {
+    var openServiceConfigureDialog by remember {
         mutableStateOf(false)
     }
-    var openEditEmailDialog by rememberSaveable {
+    var openEditEmailDialog by remember {
         mutableStateOf(false)
     }
-    var openConfirmDeleteDialog by rememberSaveable { mutableStateOf(false) }
-    var openConfirmExitDialog by rememberSaveable { mutableStateOf(false) }
+    var openConfirmDeleteDialog by remember { mutableStateOf(false) }
+    var openConfirmExitDialog by remember { mutableStateOf(false) }
     val scrollBehavior = rememberTwoLayerTopAppBarScrollBehavior()
     var popupContent by remember {
         mutableStateOf<StringResource?>(null)
@@ -346,9 +345,13 @@ fun ProfilePage(
             onDismissRequest = { popupContent = null }
         ) {
             Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(8.dp),
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 text = stringResource(popupContent!!),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
+                style = MaterialTheme.typography.bodyLarge
             )
         }
     if (openEditEmailDialog) {

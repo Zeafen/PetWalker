@@ -127,7 +127,7 @@ class ReviewConfigureViewModelTest {
     @Test
     fun reviewConfigureViewModel_SetReviewText_ValidText_ValidationPassed() = runTest {
         //defining
-        val expectedText = "Lorem ipsum dolor sit amet."
+        val expectedText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non laoreet ipsum, ut elementum lacus."
         val reviewConfigureViewModel = ReviewConfigureViewModel(
             assignmentsRepMock,
             reviewsRepoMock,
@@ -260,7 +260,7 @@ class ReviewConfigureViewModelTest {
 
         //testing
         reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewRating(3))
-        reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewText("Lorem ipsum dolor sit amet"))
+        reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non laoreet ipsum, ut elementum lacus."))
         withContext(Dispatchers.Default) { delay(10) }
 
         //assert
@@ -278,6 +278,7 @@ class ReviewConfigureViewModelTest {
             "test-user-id",
             "test-assignment-id",
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            true,
             3,
             LocalDateTime(2000, 1, 1, 1, 1),
             null
@@ -463,7 +464,7 @@ class ReviewConfigureViewModelTest {
 
         //testing
         reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewRating(3))
-        reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewText("Lorem ipsum dolor sit amet"))
+        reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non laoreet ipsum, ut elementum lacus."))
         withContext(Dispatchers.Default) { delay(10) }
 
         reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.PublishReview)
@@ -486,6 +487,7 @@ class ReviewConfigureViewModelTest {
             "test-user-id",
             "test-assignment-id",
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            true,
             3,
             LocalDateTime(2000, 1, 1, 1, 1),
             null
@@ -503,7 +505,7 @@ class ReviewConfigureViewModelTest {
 
         //testing
         reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewRating(3))
-        reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewText("Lorem ipsum dolor sit amet"))
+        reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.SetReviewText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non laoreet ipsum, ut elementum lacus."))
         withContext(Dispatchers.Default) { delay(10) }
 
         reviewConfigureViewModel.onEvent(ReviewConfigureUiEvent.PublishReview)
@@ -525,6 +527,7 @@ class ReviewConfigureViewModelTest {
             "test-user-id",
             "test-assignment-id",
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            true,
             3,
             LocalDateTime(2000, 1, 1, 1, 1),
             null
@@ -591,6 +594,7 @@ class ReviewConfigureViewModelTest {
             "test-user-id",
             "test-assignment-id",
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            true,
             3,
             LocalDateTime(2000, 1, 1, 1, 1),
             null

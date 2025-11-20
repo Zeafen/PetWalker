@@ -39,6 +39,7 @@ import petwalker.composeapp.generated.resources.date_less_than_error_txt
 import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.greater_than_error_txt
 import petwalker.composeapp.generated.resources.incorrect_length_max_error
+import petwalker.composeapp.generated.resources.less_than_error_txt
 import petwalker.composeapp.generated.resources.nan_error_txt
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -148,6 +149,12 @@ class PetConfigureViewModel(
                                 false,
                                 Res.string.greater_than_error_txt,
                                 listOf(0)
+                            )
+
+                            value.petWeight.toFloat() >= 100000f -> ValidationInfo(
+                                false,
+                                Res.string.less_than_error_txt,
+                                listOf(100000)
                             )
 
                             else -> ValidationInfo(true, null, emptyList())

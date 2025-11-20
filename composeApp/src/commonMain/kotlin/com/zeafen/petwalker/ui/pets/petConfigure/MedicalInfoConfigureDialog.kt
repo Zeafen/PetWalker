@@ -18,7 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,9 +42,11 @@ import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.add_btn_txt
 import petwalker.composeapp.generated.resources.description_input_hint
 import petwalker.composeapp.generated.resources.description_label
+import petwalker.composeapp.generated.resources.empty_fields_error_txt
 import petwalker.composeapp.generated.resources.ic_text
 import petwalker.composeapp.generated.resources.medical_info_label
 import petwalker.composeapp.generated.resources.option_selection_hint
+import petwalker.composeapp.generated.resources.required_label
 
 @Composable
 fun MedicalInfoConfigureDialog(
@@ -57,13 +59,13 @@ fun MedicalInfoConfigureDialog(
     ) -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    var selectedType by rememberSaveable(medicalInfo) {
+    var selectedType by remember(medicalInfo) {
         mutableStateOf(medicalInfo?.type)
     }
-    var description by rememberSaveable {
+    var description by remember {
         mutableStateOf(medicalInfo?.description ?: "")
     }
-    var document by rememberSaveable {
+    var document by remember {
         mutableStateOf<Pair<Attachment, PetWalkerFileInfo?>?>(medicalInfo?.reference?.let {
             Attachment("", AttachmentType.Document, medicalInfo.name ?: "Undefined", it) to null
         })
@@ -123,6 +125,7 @@ fun MedicalInfoConfigureDialog(
                     selectedOptions = selectedType?.let { listOf(it) } ?: emptyList(),
                     availableOptions = PetInfoType.entries.toList(),
                     hint = stringResource(Res.string.option_selection_hint),
+                    supportingText = if (selectedType == null) stringResource(Res.string.required_label) else null,
                     onOptionSelected = { selectedType = it },
                     onOptionDeleted = { selectedType = null },
                     optionContent = {
@@ -137,6 +140,10 @@ fun MedicalInfoConfigureDialog(
                 PetWalkerTextInput(
                     modifier = Modifier.weight(1f),
                     value = description,
+                    isError = description.isBlank() && document?.first == null,
+                    supportingText = if (description.isBlank() && document?.first == null) stringResource(
+                        Res.string.empty_fields_error_txt
+                    ) else null,
                     label = stringResource(Res.string.description_label),
                     hint = stringResource(Res.string.description_input_hint),
                     leadingIcon = painterResource(Res.drawable.ic_text),

@@ -36,11 +36,13 @@ import petwalker.composeapp.generated.resources.distance_from_user_txt
 import petwalker.composeapp.generated.resources.ic_location_pin
 import petwalker.composeapp.generated.resources.ic_online
 import petwalker.composeapp.generated.resources.ic_refresh
+import petwalker.composeapp.generated.resources.ic_service
 import petwalker.composeapp.generated.resources.ic_walk
 import petwalker.composeapp.generated.resources.ic_wallet
 import petwalker.composeapp.generated.resources.online_label
 import petwalker.composeapp.generated.resources.repeating_orders_count_label
 import petwalker.composeapp.generated.resources.reviews_count_txt
+import petwalker.composeapp.generated.resources.services_label
 
 @Composable
 fun WalkerCard(
@@ -94,7 +96,8 @@ fun WalkerCard(
             distance = distance,
             repeatingOrdersCount = walker.repeatingOrdersCount,
             isOnline = walker.isOnline,
-            desiredPayment = walker.desiredPayment
+            desiredPayment = walker.desiredPayment,
+            services = walker.services.map { stringResource(it.service.displayName) }
         )
     }
 }
@@ -152,7 +155,8 @@ fun WalkerCard(
             distance = walker.distance,
             repeatingOrdersCount = walker.repeatingOrdersCount,
             isOnline = walker.isOnline,
-            desiredPayment = walker.desiredPayment
+            desiredPayment = walker.desiredPayment,
+            services = walker.services.map { stringResource(it.service.displayName) }
         )
     }
 }
@@ -194,9 +198,11 @@ fun WalkerCardInfoBody(
     address: String?,
     distance: Float?,
     repeatingOrdersCount: Long,
+    services: List<String>?,
     isOnline: Boolean?,
     desiredPayment: DesiredPayment?
 ) {
+
     FlowRow(modifier = modifier) {
         HintWithIcon(
             hint = "Desired payment: " +
@@ -223,6 +229,14 @@ fun WalkerCardInfoBody(
                     Res.string.distance_from_user_txt,
                     it.format(2)
                 )
+            )
+            Spacer(Modifier.size(8.dp))
+        }
+
+        if (!services.isNullOrEmpty()) {
+            HintWithIcon(
+                leadingIcon = painterResource(Res.drawable.ic_service),
+                hint = stringResource(Res.string.services_label) + ": " + services.joinToString()
             )
             Spacer(Modifier.size(8.dp))
         }

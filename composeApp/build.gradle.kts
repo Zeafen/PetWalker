@@ -14,7 +14,7 @@ plugins {
 kotlin {
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -63,7 +63,6 @@ kotlin {
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.navigation.compose)
 
             implementation(libs.mpfilePicker)
 
@@ -87,7 +86,6 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(kotlin("test-annotations-common"))
             implementation(libs.assertK)
-            implementation(libs.mokkery.gradle)
             implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
@@ -96,6 +94,13 @@ kotlin {
 
             implementation(libs.ktor.client.okhttp)
             implementation(libs.ktor.client.java)
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.mokkery.gradle)
+        }
+        jvmTest.dependencies {
+            implementation(libs.mokkery.gradle)
         }
     }
 }

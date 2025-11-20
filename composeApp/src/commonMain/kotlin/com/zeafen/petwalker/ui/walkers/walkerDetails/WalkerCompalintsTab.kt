@@ -201,6 +201,8 @@ fun ComplaintsList(
             ) {
                 items(complaints.data!!.result, key = { it.id }) { complaint ->
                     ComplaintCard(
+                        modifier = Modifier
+                            .padding(4.dp),
                         complaint = complaint,
                         onSeeAssignmentClick = onGoToAssignmentClick,
                         onEditComplaintClick = { onEditComplaintClick(complaint.id) },

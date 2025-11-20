@@ -13,22 +13,11 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Surface
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.zeafen.petwalker.data.helpers.DeviceConfiguration
-import com.zeafen.petwalker.domain.models.api.assignments.Assignment
-import com.zeafen.petwalker.domain.models.api.assignments.AssignmentState
-import com.zeafen.petwalker.domain.models.api.other.PagedResult
-import com.zeafen.petwalker.domain.models.api.other.ServiceType
-import com.zeafen.petwalker.domain.models.api.pets.Pet
-import com.zeafen.petwalker.domain.models.api.users.APILocation
-import com.zeafen.petwalker.domain.models.api.users.AccountStatus
-import com.zeafen.petwalker.domain.models.api.users.DesiredPayment
-import com.zeafen.petwalker.domain.models.api.users.UserService
-import com.zeafen.petwalker.domain.models.api.users.Walker
 import com.zeafen.petwalker.domain.models.api.util.APIResult
 import com.zeafen.petwalker.presentation.assignments.assignmentDetailsPage.AssignmentDetailsUiEvent
 import com.zeafen.petwalker.presentation.assignments.assignmentDetailsPage.AssignmentDetailsUiState
@@ -36,10 +25,8 @@ import com.zeafen.petwalker.ui.pets.PetCard
 import com.zeafen.petwalker.ui.standard.elements.ErrorInfoHint
 import com.zeafen.petwalker.ui.standard.elements.PageSelectionRow
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerTextInput
-import com.zeafen.petwalker.ui.theme.PetWalker_theme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.ic_search
 import petwalker.composeapp.generated.resources.name_search_field_hint
@@ -49,7 +36,8 @@ import petwalker.composeapp.generated.resources.species_search_field_hint
 fun AssignmentPetsTab(
     modifier: Modifier = Modifier,
     state: AssignmentDetailsUiState,
-    onEvent: (AssignmentDetailsUiEvent) -> Unit
+    onEvent: (AssignmentDetailsUiEvent) -> Unit,
+    onGoToPetClick: (petId: String) -> Unit
 ) {
     val deviceConfig =
         DeviceConfiguration.fromWindowSizeClass(currentWindowAdaptiveInfo().windowSizeClass)
@@ -131,7 +119,8 @@ fun AssignmentPetsTab(
                         PetCard(
                             modifier = Modifier
                                 .padding(12.dp),
-                            pet = it
+                            pet = it,
+                            onClick = { onGoToPetClick(it.id) }
                         )
                     }
                     item(span = StaggeredGridItemSpan.FullLine) {

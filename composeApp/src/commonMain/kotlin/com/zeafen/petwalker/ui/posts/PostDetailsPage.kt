@@ -366,9 +366,13 @@ fun PostDetailsPage(
                 onDismissRequest = { popupContent = null }
             ) {
                 Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.tertiaryContainer)
+                        .padding(8.dp),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer,
                     text = stringResource(popupContent!!),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
     }

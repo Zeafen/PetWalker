@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +43,7 @@ fun ReviewsFilteringDialog(
     Dialog(
         onDismissRequest = onDismissRequest
     ) {
-        var positiveOption by rememberSaveable {
+        var positiveOption by remember {
             mutableStateOf(
                 1 to FilterOption(
                     name = Res.string.positive_label,
@@ -51,7 +51,7 @@ fun ReviewsFilteringDialog(
                 )
             )
         }
-        var periodOption by rememberSaveable {
+        var periodOption by remember {
             mutableStateOf(
                 2 to FilterOption(
                     name = Res.string.date_period_label,

@@ -23,6 +23,7 @@ import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
+import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -46,6 +47,7 @@ class ProfileViewModelTest {
     private val usersRepositoryMock = mock<UsersRepository>()
     private val authDataStoreMock = mock<AuthDataStoreRepository>()
     private val reviewsRepositoryMock = mock<ReviewsRepository>()
+
 
     @BeforeTest
     fun initMocks() {
@@ -93,7 +95,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
 
         //testing
@@ -112,7 +115,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
 
         //testing
@@ -140,7 +144,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -166,7 +171,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -193,7 +199,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -220,7 +227,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -243,7 +251,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -274,7 +283,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -305,7 +315,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -334,7 +345,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -359,7 +371,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -387,7 +400,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -422,7 +436,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -466,7 +481,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -524,7 +540,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -580,7 +597,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -630,7 +648,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -688,7 +707,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -746,7 +766,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -801,7 +822,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -830,7 +852,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -863,7 +886,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -886,7 +910,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -909,7 +934,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -933,7 +959,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -968,7 +995,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -1003,7 +1031,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 
@@ -1057,7 +1086,8 @@ class ProfileViewModelTest {
             profileRepositoryMock,
             usersRepositoryMock,
             authDataStoreMock,
-            reviewsRepositoryMock
+            reviewsRepositoryMock,
+            HttpClient()
         )
         withContext(Dispatchers.Default) { delay(10) }
 

@@ -29,7 +29,7 @@ sealed interface NavigationRoutes {
     data object HomePage : NavigationRoutes
 
     @Serializable
-    data class RecruitmentsPage(val initialTab: RecruitmentsLoadGroup = RecruitmentsLoadGroup.All) :
+    data class RecruitmentsPage(val loadAsOwner: Boolean? = null) :
         NavigationRoutes
 
     @Serializable

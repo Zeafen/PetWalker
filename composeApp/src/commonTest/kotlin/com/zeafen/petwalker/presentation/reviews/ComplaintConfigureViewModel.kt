@@ -318,6 +318,7 @@ class ComplaintConfigureViewModel {
             ComplaintTopic.Toxic_Behaviour,
             ComplaintStatus.Pending,
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at nibh ut ante suscipit porta in et nisl.",
+            true,
             LocalDateTime(2000, 1, 1, 1, 1),
             LocalDateTime(2000, 1, 1, 1, 1)
         )
@@ -429,6 +430,7 @@ class ComplaintConfigureViewModel {
             ComplaintTopic.Toxic_Behaviour,
             ComplaintStatus.Pending,
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at nibh ut ante suscipit porta in et nisl.",
+            true,
             LocalDateTime(2000, 1, 1, 1, 1),
             LocalDateTime(2000, 1, 1, 1, 1)
         )
@@ -537,6 +539,7 @@ class ComplaintConfigureViewModel {
             ComplaintTopic.Toxic_Behaviour,
             ComplaintStatus.Pending,
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at nibh ut ante suscipit porta in et nisl.",
+            true,
             LocalDateTime(2000, 1, 1, 1, 1),
             LocalDateTime(2000, 1, 1, 1, 1)
         )
@@ -582,6 +585,7 @@ class ComplaintConfigureViewModel {
             ComplaintTopic.Toxic_Behaviour,
             ComplaintStatus.Pending,
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at nibh ut ante suscipit porta in et nisl.",
+            true,
             LocalDateTime(2000, 1, 1, 1, 1),
             LocalDateTime(2000, 1, 1, 1, 1)
         )
@@ -634,6 +638,7 @@ class ComplaintConfigureViewModel {
             ComplaintTopic.Toxic_Behaviour,
             ComplaintStatus.Pending,
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at nibh ut ante suscipit porta in et nisl.",
+            true,
             LocalDateTime(2000, 1, 1, 1, 1),
             LocalDateTime(2000, 1, 1, 1, 1)
         )

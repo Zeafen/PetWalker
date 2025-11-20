@@ -293,7 +293,13 @@ fun ChannelDetailsPage(
             alignment = Alignment.BottomCenter,
             onDismissRequest = { popupContent = null }
         ) {
+
             Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(8.dp),
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 text = when {
                     popupContent == state.canSend.errorResId -> stringResource(
                         state.canSend.errorResId!!,
@@ -303,7 +309,6 @@ fun ChannelDetailsPage(
                     else -> stringResource(popupContent!!)
                 },
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
             )
         }
 }

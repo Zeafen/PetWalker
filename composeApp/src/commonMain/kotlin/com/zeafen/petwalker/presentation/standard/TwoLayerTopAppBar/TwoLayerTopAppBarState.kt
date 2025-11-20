@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.mapSaver
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 
 class TwoLayerTopAppBarState(
@@ -59,14 +58,8 @@ class TwoLayerTopAppBarState(
 }
 
 @Composable
-internal fun rememberTwoLayerTopAppBarState(
+internal expect fun rememberTwoLayerTopAppBarState(
     initialHeightOffsetLimit: Float = 0f,
     initialHeightOffset: Float = 0f,
     initialContentOffset: Float = 0f
-) = rememberSaveable(saver = TwoLayerTopAppBarState.Saver) {
-    TwoLayerTopAppBarState(
-        initialHeightOffsetLimit,
-        initialHeightOffset,
-        initialContentOffset
-    )
-}
+): TwoLayerTopAppBarState

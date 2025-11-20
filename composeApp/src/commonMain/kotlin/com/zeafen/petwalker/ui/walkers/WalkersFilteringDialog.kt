@@ -14,13 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.zeafen.petwalker.domain.models.api.filtering.UsersOrdering
 import com.zeafen.petwalker.domain.models.api.other.ServiceType
 import com.zeafen.petwalker.domain.models.api.users.AccountStatus
 import com.zeafen.petwalker.presentation.standard.filtering.FilterOption
@@ -49,7 +48,7 @@ fun WalkersFilteringDialog(
     Dialog(
         onDismissRequest = onDismissRequest,
     ) {
-        var serviceOption by rememberSaveable {
+        var serviceOption by remember {
             mutableStateOf(
                 1 to FilterOption(
                     value = FilteringTypes.ListingType(
@@ -65,7 +64,7 @@ fun WalkersFilteringDialog(
                 ),
             )
         }
-        var maxComplaintsOption by rememberSaveable {
+        var maxComplaintsOption by remember {
             mutableStateOf(
                 2 to FilterOption(
                     value = FilteringTypes.IntType(),
@@ -73,7 +72,7 @@ fun WalkersFilteringDialog(
                 ),
             )
         }
-        var statusOption by rememberSaveable {
+        var statusOption by remember {
             mutableStateOf(
                 3 to FilterOption(
                     value = FilteringTypes.ListingType(
@@ -90,7 +89,7 @@ fun WalkersFilteringDialog(
                 )
             )
         }
-        var onlineOption by rememberSaveable {
+        var onlineOption by remember {
             mutableStateOf(
                 4 to FilterOption(
                     value = FilteringTypes.BooleanType(),

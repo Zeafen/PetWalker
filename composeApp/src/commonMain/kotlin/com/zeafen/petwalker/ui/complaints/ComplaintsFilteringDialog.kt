@@ -22,7 +22,9 @@ import com.zeafen.petwalker.ui.standard.elements.FiltersDialogBody
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerDialogHeader
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
+import petwalker.composeapp.generated.resources.date_period_label
 import petwalker.composeapp.generated.resources.filters_label
+import petwalker.composeapp.generated.resources.status_label
 import petwalker.composeapp.generated.resources.topic_label
 
 @Composable
@@ -58,7 +60,7 @@ fun ComplaintFilteringDialog(
         var statusOption by remember {
             mutableStateOf(
                 2 to FilterOption(
-                    name = Res.string.topic_label,
+                    name = Res.string.status_label,
                     value = FilteringTypes.ListingType(
                         singleSelection = true,
                         availableOptions = ComplaintStatus.entries.toList(),
@@ -75,7 +77,7 @@ fun ComplaintFilteringDialog(
         var periodOption by remember {
             mutableStateOf(
                 3 to FilterOption(
-                    name = Res.string.topic_label,
+                    name = Res.string.date_period_label ,
                     value = FilteringTypes.ListingType(
                         singleSelection = true,
                         availableOptions = DatePeriods.entries.toList(),

@@ -19,7 +19,7 @@ datetime = "0.7.1"
 ktor = "3.3.2"
 kotlin-serialization = "2.2.10"
 coil = "3.3.0"
-navigation = "2.9.0-beta05"
+navigation = "2.9.1"
 koin = "4.1.1"
 koinComposeMultiplatform = "4.1.1"
 mpfilePicker = "3.1.0"
@@ -84,9 +84,9 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 #Tests
-assertK = { module = "com.willowtreeapps.assertk:assertk", version.ref="assertK" }
-mokkery-gradle = { module="dev.mokkery:mokkery-gradle", version.ref = "mokkery" }
-kotlinx-coroutines-test = {module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines"}
+assertK = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertK" }
+mokkery-gradle = { module = "dev.mokkery:mokkery-gradle", version.ref = "mokkery" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -96,7 +96,7 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
-mokkery = { id="dev.mokkery", version.ref = "mokkery" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 
 [bundles]
 ktor = [

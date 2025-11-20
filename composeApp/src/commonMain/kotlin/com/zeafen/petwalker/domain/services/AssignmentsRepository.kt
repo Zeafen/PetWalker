@@ -195,6 +195,15 @@ interface AssignmentsRepository {
     ): APIResult<Boolean, com.zeafen.petwalker.domain.models.api.util.Error>
 
     /***
+     * Gets if user owns assignment
+     * @returnAssignment entity if the request succeeded, otherwise - Error info
+     * @param assignmentId - Identifier of assignment
+     */
+    suspend fun doesOwnAssignment(
+        assignmentId: String
+    ): APIResult<Boolean, com.zeafen.petwalker.domain.models.api.util.Error>
+
+    /***
      * Posts assignment to the source
      * @param request - Assignment data to post
      */

@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +44,7 @@ fun AssignmentsFilteringDialog(
     ) -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    var distanceOption by rememberSaveable {
+    var distanceOption by remember {
         mutableStateOf(
             1 to FilterOption(
                 name = Res.string.max_distance_option_label,
@@ -52,7 +52,7 @@ fun AssignmentsFilteringDialog(
             )
         )
     }
-    var timeFromOption by rememberSaveable {
+    var timeFromOption by remember {
         mutableStateOf(
             2 to FilterOption(
                 name = Res.string.date_period_start_label,
@@ -60,7 +60,7 @@ fun AssignmentsFilteringDialog(
             )
         )
     }
-    var timeToOption by rememberSaveable {
+    var timeToOption by remember {
         mutableStateOf(
             3 to FilterOption(
                 name = Res.string.date_period_end_label,
@@ -68,7 +68,7 @@ fun AssignmentsFilteringDialog(
             )
         )
     }
-    var servicesOption by rememberSaveable {
+    var servicesOption by remember {
         mutableStateOf(
             4 to FilterOption(
                 name = Res.string.services_label,

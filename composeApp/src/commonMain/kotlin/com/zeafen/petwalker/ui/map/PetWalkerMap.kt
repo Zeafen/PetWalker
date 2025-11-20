@@ -38,7 +38,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -136,10 +135,10 @@ fun PetWalkerMap(
     }
     val markerWidth = with(LocalDensity.current) { 32.dp.toPx() }
     val markerHeight = with(LocalDensity.current) { 48.dp.toPx() }
-    var followCurrentUserLoc by rememberSaveable {
+    var followCurrentUserLoc by remember {
         mutableStateOf(false)
     }
-    var followObservedTile by rememberSaveable {
+    var followObservedTile by remember {
         mutableStateOf(false)
     }
     val mapState = remember {
@@ -522,6 +521,10 @@ fun PetWalkerMap(
             onDismissRequest = { popupContent = null },
         ) {
             Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 when (popupContent!!) {

@@ -46,13 +46,16 @@ class PetWalkerAssignmentsRepository(
                 parameter("page", page)
                 parameter("perPage", perPage)
                 parameter("title", title)
-                parameter("location", location)
                 parameter("maxDistance", maxDistance)
                 parameter("timeFrom", timeFrom)
                 parameter("timeTo", timeTo)
                 parameter("services", services)
                 parameter("ordering", ordering)
                 parameter("ascending", ascending)
+                location?.let {
+                    parameter("location.longitude", location.longitude)
+                    parameter("location.latitude", location.latitude)
+                }
                 contentType(ContentType.Application.Json)
             }
         } catch (e: UnresolvedAddressException) {
@@ -97,7 +100,10 @@ class PetWalkerAssignmentsRepository(
                 parameter("page", page)
                 parameter("perPage", perPage)
                 parameter("title", title)
-                parameter("location", location)
+                location?.let {
+                    parameter("location.longitude", location.longitude)
+                    parameter("location.latitude", location.latitude)
+                }
                 parameter("maxDistance", maxDistance)
                 parameter("timeFrom", timeFrom)
                 parameter("timeTo", timeTo)
@@ -148,7 +154,10 @@ class PetWalkerAssignmentsRepository(
                 parameter("page", page)
                 parameter("perPage", perPage)
                 parameter("title", title)
-                parameter("location", location)
+                location?.let {
+                    parameter("location.longitude", location.longitude)
+                    parameter("location.latitude", location.latitude)
+                }
                 parameter("maxDistance", maxDistance)
                 parameter("timeFrom", timeFrom)
                 parameter("timeTo", timeTo)
@@ -199,7 +208,10 @@ class PetWalkerAssignmentsRepository(
                 parameter("page", page)
                 parameter("perPage", perPage)
                 parameter("title", title)
-                parameter("location", location)
+                location?.let {
+                    parameter("location.longitude", location.longitude)
+                    parameter("location.latitude", location.latitude)
+                }
                 parameter("maxDistance", maxDistance)
                 parameter("timeFrom", timeFrom)
                 parameter("timeTo", timeTo)
@@ -251,7 +263,10 @@ class PetWalkerAssignmentsRepository(
                 parameter("page", page)
                 parameter("perPage", perPage)
                 parameter("title", title)
-                parameter("location", location)
+                location?.let {
+                    parameter("location.longitude", location.longitude)
+                    parameter("location.latitude", location.latitude)
+                }
                 parameter("maxDistance", maxDistance)
                 parameter("timeFrom", timeFrom)
                 parameter("timeTo", timeTo)
@@ -304,7 +319,10 @@ class PetWalkerAssignmentsRepository(
                 parameter("page", page)
                 parameter("perPage", perPage)
                 parameter("title", title)
-                parameter("location", location)
+                location?.let {
+                    parameter("location.longitude", location.longitude)
+                    parameter("location.latitude", location.latitude)
+                }
                 parameter("maxDistance", maxDistance)
                 parameter("timeFrom", timeFrom)
                 parameter("timeTo", timeTo)
@@ -376,6 +394,36 @@ class PetWalkerAssignmentsRepository(
     ): APIResult<Boolean, com.zeafen.petwalker.domain.models.api.util.Error> {
         val result = try {
             client.get(BASE_URL + "assignments/$assignmentId/canrecruit") {
+                contentType(ContentType.Application.Json)
+            }
+        } catch (e: UnresolvedAddressException) {
+            return APIResult.Error(NetworkError.NO_INTERNET)
+        } catch (e: SocketTimeoutException) {
+            return APIResult.Error(NetworkError.REQUEST_TIMEOUT)
+        } catch (e: ConnectTimeoutException) {
+            return APIResult.Error(NetworkError.REQUEST_TIMEOUT)
+        }
+
+        return when (result.status.value) {
+            in 200..299 -> {
+                val body = result.body<Boolean>()
+                APIResult.Succeed(body)
+            }
+
+            400 -> APIResult.Error(NetworkError.SERVER_ERROR, result.bodyAsText())
+            401 -> APIResult.Error(NetworkError.UNAUTHORIZED)
+            404 -> APIResult.Error(NetworkError.NOT_FOUND, result.bodyAsText())
+            409 -> APIResult.Error(NetworkError.CONFLICT, result.bodyAsText())
+            408 -> APIResult.Error(NetworkError.REQUEST_TIMEOUT, result.bodyAsText())
+            413 -> APIResult.Error(NetworkError.PAYLOAD_TOO_LARGE)
+            in 500..599 -> APIResult.Error(NetworkError.SERVER_ERROR, result.bodyAsText())
+            else -> APIResult.Error(NetworkError.UNKNOWN, result.bodyAsText())
+        }
+    }
+
+    override suspend fun doesOwnAssignment(assignmentId: String): APIResult<Boolean, Error> {
+        val result = try {
+            client.get(BASE_URL + "assignments/$assignmentId/owns") {
                 contentType(ContentType.Application.Json)
             }
         } catch (e: UnresolvedAddressException) {

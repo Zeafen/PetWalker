@@ -1,5 +1,6 @@
 package com.zeafen.petwalker.presentation.assignments.recruitmentsPage
 
+import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.StringResource
 import petwalker.composeapp.generated.resources.Res
 import petwalker.composeapp.generated.resources.all_option_display_name

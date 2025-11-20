@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -94,13 +93,13 @@ fun PetConfigurePage(
     onEvent: (PetConfigureUiEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
-    var openMedicalInfoDialog by rememberSaveable {
+    var openMedicalInfoDialog by remember {
         mutableStateOf(false)
     }
     var openConfirmDeleteDialog by remember {
         mutableStateOf(false)
     }
-    var popupContent by rememberSaveable {
+    var popupContent by remember {
         mutableStateOf<StringResource?>(null)
     }
     val documentPicker = rememberDocumentPicker { fileInfo ->
@@ -273,9 +272,13 @@ fun PetConfigurePage(
             onDismissRequest = { popupContent = null }
         ) {
             Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(8.dp),
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 text = stringResource(popupContent!!),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
+                style = MaterialTheme.typography.bodyLarge
             )
         }
 }

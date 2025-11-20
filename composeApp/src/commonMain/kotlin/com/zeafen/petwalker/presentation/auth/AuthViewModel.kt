@@ -60,7 +60,7 @@ class AuthViewModel(
 
         _state.distinctUntilChangedBy { it.phone }
             .onEach { state ->
-                val isValid = state.phone.isValidPhoneNumber()
+                val isValid = state.phone.isEmpty() || state.phone.isValidPhoneNumber()
                 _state.update {
                     it.copy(
                         phoneValid = ValidationInfo(

@@ -54,6 +54,7 @@ import com.zeafen.petwalker.presentation.walkers.walkerDetails.WalkerDetailsPage
 import com.zeafen.petwalker.ui.standard.elements.ErrorInfoHint
 import com.zeafen.petwalker.ui.standard.elements.PetWalkerAlertDialog
 import com.zeafen.petwalker.ui.walkers.walkerDetails.WalkerInfoTab
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import petwalker.composeapp.generated.resources.Res
@@ -64,9 +65,10 @@ import petwalker.composeapp.generated.resources.complete_btn_txt
 import petwalker.composeapp.generated.resources.confirm_change_status_label
 import petwalker.composeapp.generated.resources.ic_go_back
 import petwalker.composeapp.generated.resources.ic_online
-import petwalker.composeapp.generated.resources.pending_status_display_name
+import petwalker.composeapp.generated.resources.loading_label
 import petwalker.composeapp.generated.resources.search_field_hint
 import petwalker.composeapp.generated.resources.start_btn_txt
+import petwalker.composeapp.generated.resources.success_label
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,7 +78,8 @@ fun AssignmentDetailsPage(
     onEvent: (AssignmentDetailsUiEvent) -> Unit,
     onBackClick: () -> Unit,
     onGoToChannelClick: (assignmentId: String) -> Unit,
-    onLeaveReviewClick: (assignmentID: String) -> Unit
+    onLeaveReviewClick: (assignmentID: String) -> Unit,
+    onGoToPetClick: (petId: String) -> Unit
 ) {
     val pagerState = rememberPagerState {
         WalkerDetailsPageTabs.entries.size
@@ -84,8 +87,8 @@ fun AssignmentDetailsPage(
     var openStatusSelectionMenu by remember {
         mutableStateOf(false)
     }
-    var popupContent = remember(state.assignmentWalker) {
-        state.filesLoadingError?.infoResource()
+    var popupContent by remember {
+        mutableStateOf<StringResource?>(null)
     }
     var selectedStatus by remember {
         mutableStateOf<AssignmentState?>(null)
@@ -94,6 +97,18 @@ fun AssignmentDetailsPage(
         mutableStateOf(false)
     }
 
+    LaunchedEffect(state.recruitingResult) {
+        if (state.recruitingResult != null)
+            popupContent = when (state.recruitingResult) {
+                is APIResult.Downloading -> Res.string.loading_label
+                is APIResult.Error -> state.recruitingResult.info.infoResource()
+                is APIResult.Succeed -> Res.string.success_label
+            }
+    }
+    LaunchedEffect(state.filesLoadingError) {
+        if (state.filesLoadingError != null)
+            popupContent = state.filesLoadingError.infoResource()
+    }
     LaunchedEffect(state.selectedTabIndex) {
         pagerState.animateScrollToPage(state.selectedTabIndex)
     }
@@ -270,7 +285,8 @@ fun AssignmentDetailsPage(
                             modifier = Modifier
                                 .fillMaxHeight(),
                             state = state,
-                            onEvent = onEvent
+                            onEvent = onEvent,
+                            onGoToPetClick = onGoToPetClick
                         )
                     }
 
@@ -358,9 +374,13 @@ fun AssignmentDetailsPage(
             onDismissRequest = { popupContent = null }
         ) {
             Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(8.dp),
+                color = MaterialTheme.colorScheme.onTertiaryContainer,
                 text = stringResource(popupContent!!),
                 style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.error
             )
         }
     }

@@ -118,6 +118,17 @@ class AssignmentDetailsViewModel(
                         }
                     }
 
+                    val owns = async {
+                        if (assignment is APIResult.Error) null
+                        else {
+                            val res =
+                                assignmentsRepository.doesOwnAssignment((assignment as APIResult.Succeed).data!!.id)
+                            if (res is APIResult.Succeed)
+                                res.data
+                            else null
+                        }
+                    }
+
                     val distance =
                         if (assignment is APIResult.Succeed)
                             location?.calculateDistance(assignment.data!!.location)
@@ -131,7 +142,7 @@ class AssignmentDetailsViewModel(
                             assignmentOwner = owner.await(),
                             distanceToAssignment = distance?.toFloat(),
                             canRecruit = canRecruit.await() ?: false,
-                            owns = !(canRecruit.await() ?: true)
+                            owns = owns.await() ?: false
                         )
                     }
                 }
