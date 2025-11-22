@@ -52,6 +52,16 @@ class ComplaintConfigureViewModel(
         _state.asStateFlow()
 
     init {
+        authDataStore.authDataStoreFlow.onEach { userInfo ->
+            _state.update {
+                it.copy(
+                    currentUserName = "${userInfo.firstName}  ${userInfo.lastName}",
+                    currentUserImageUrl = userInfo.imageUrl
+                )
+            }
+        }
+            .launchIn(viewModelScope)
+
         state
             .distinctUntilChangedBy { it.complaintDetails }
             .onEach { value ->

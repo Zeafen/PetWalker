@@ -132,14 +132,15 @@ fun PetConfigurePage(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { openConfirmDeleteDialog = true }
-                    ) {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_delete),
-                            contentDescription = "Delete pet"
-                        )
-                    }
+                    if (!state.selectedPetId.isNullOrEmpty())
+                        IconButton(
+                            onClick = { openConfirmDeleteDialog = true }
+                        ) {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_delete),
+                                contentDescription = "Delete pet"
+                            )
+                        }
                     IconButton(
                         onClick = {
                             if (state.canPublish)
