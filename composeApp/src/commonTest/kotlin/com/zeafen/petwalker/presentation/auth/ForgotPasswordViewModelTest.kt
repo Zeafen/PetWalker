@@ -275,9 +275,21 @@ class ForgotPasswordViewModelTest {
 
         //testing
         forgotPasswViewModel.onEvent(ForgotPasswordUiEvent.EnterCode("Lorem ipsum dolor sit amet"))
+        withContext(Dispatchers.Default) {
+            delay(10)
+        }
         forgotPasswViewModel.onEvent(ForgotPasswordUiEvent.EnterEmail("Loremipsum@gmail.com"))
+        withContext(Dispatchers.Default) {
+            delay(10)
+        }
         forgotPasswViewModel.onEvent(ForgotPasswordUiEvent.EnterPassword("Lorem_Ipsum_123"))
+        withContext(Dispatchers.Default) {
+            delay(10)
+        }
         forgotPasswViewModel.onEvent(ForgotPasswordUiEvent.EnterRepeatPassword("Lorem_Ipsum_123"))
+        withContext(Dispatchers.Default) {
+            delay(10)
+        }
         withContext(Dispatchers.Default) {
             delay(10)
         }

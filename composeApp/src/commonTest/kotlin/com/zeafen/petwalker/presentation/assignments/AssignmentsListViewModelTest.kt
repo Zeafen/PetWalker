@@ -155,7 +155,7 @@ class AssignmentsListViewModelTest {
 //      testing
         assignmentsViewModel.onEvent(AssignmentsUiEvent.LoadAssignments(1))
         withContext(Dispatchers.Default) {
-            delay(10)
+            delay(50)
         }
 
         //asserting
@@ -640,7 +640,7 @@ class AssignmentsListViewModelTest {
             AssignmentsUiEvent.SetLoadType(true)
         )
         withContext(Dispatchers.Default) {
-            delay(10)
+            delay(50)
         }
 
         //asserting

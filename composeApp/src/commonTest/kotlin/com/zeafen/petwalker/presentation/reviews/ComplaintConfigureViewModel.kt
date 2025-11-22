@@ -60,6 +60,21 @@ class ComplaintConfigureViewModel {
                 "Lorem ipsum dolor sit amet"
             )
         )
+
+        everySuspend {
+            assignmentsRepoMock.getOwnAssignmentsAsOwner(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns APIResult.Error(NetworkError.SERVER_ERROR)
     }
 
 
@@ -364,7 +379,7 @@ class ComplaintConfigureViewModel {
                 "test-walker-id"
             )
         )
-        withContext(Dispatchers.Default) { delay(50) }
+        withContext(Dispatchers.Default) { delay(10) }
 
         //assert
         val actual = complaintConfigureViewModel.state.first()
@@ -629,7 +644,6 @@ class ComplaintConfigureViewModel {
     @Test
     fun complaintConfigureViewModel_PublishReview_Loaded_returnsSucceed() = runTest {
         //defining review
-        val expectedErrorCode = NetworkError.SERVER_ERROR
         val expectedComplaint = Complaint(
             "test-complaint-id",
             "test-sender-id",

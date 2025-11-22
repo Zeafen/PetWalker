@@ -711,6 +711,9 @@ class PetConfigureViewModelTest {
 
         //test
         petConfigureViewModel.onEvent(PetConfigureUiEvent.PublishData)
+        withContext(Dispatchers.Default) {
+            delay(10)
+        }
 
         //assert
         val actual = petConfigureViewModel.state.first()

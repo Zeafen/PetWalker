@@ -20,7 +20,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 //const val BASE_URL = "https://192.168.3.225:7129/"
-const val BASE_URL = "https://10.185.25.103:7129/"
+const val BASE_URL = "https://10.231.166.103:7129/"
 
 class KtorClientProvider(
 ) : KoinComponent {

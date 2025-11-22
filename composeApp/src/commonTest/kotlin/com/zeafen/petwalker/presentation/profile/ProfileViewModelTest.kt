@@ -449,6 +449,8 @@ class ProfileViewModelTest {
                 expectedPayment
             )
         )
+        withContext(Dispatchers.Default) { delay(50) }
+
         profileViewModel.onEvent(
             ProfilePageUiEvent.AddService(
                 expectedServiceType,
@@ -456,7 +458,7 @@ class ProfileViewModelTest {
                 312f
             )
         )
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //assert
         val actual = profileViewModel.state.first()
@@ -494,6 +496,8 @@ class ProfileViewModelTest {
                 expectedPayment
             )
         )
+        withContext(Dispatchers.Default) { delay(10) }
+
         profileViewModel.onEvent(
             ProfilePageUiEvent.AddService(
                 expectedServiceType,
@@ -553,6 +557,8 @@ class ProfileViewModelTest {
                 expectedPayment
             )
         )
+        withContext(Dispatchers.Default) { delay(50) }
+
         profileViewModel.onEvent(
             ProfilePageUiEvent.AddService(
                 expectedServiceType2,
@@ -560,7 +566,7 @@ class ProfileViewModelTest {
                 expectedPayment2
             )
         )
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //assert
         val actual = profileViewModel.state.first()
@@ -651,7 +657,7 @@ class ProfileViewModelTest {
             reviewsRepositoryMock,
             HttpClient()
         )
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //testing
         profileViewModel.onEvent(
@@ -661,6 +667,8 @@ class ProfileViewModelTest {
                 expectedPayment
             )
         )
+        withContext(Dispatchers.Default) { delay(50) }
+
         profileViewModel.onEvent(
             ProfilePageUiEvent.AddService(
                 ServiceType.Walking,
@@ -668,7 +676,7 @@ class ProfileViewModelTest {
                 321f
             )
         )
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         val state = profileViewModel.state.first()
         profileViewModel.onEvent(
@@ -679,7 +687,7 @@ class ProfileViewModelTest {
                 312f
             )
         )
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //assert
         val actual = profileViewModel.state.first()

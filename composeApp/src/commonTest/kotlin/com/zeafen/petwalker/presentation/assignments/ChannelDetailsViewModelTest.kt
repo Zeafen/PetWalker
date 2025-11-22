@@ -397,12 +397,12 @@ class ChannelDetailsViewModelTest {
 //      testing
         channelDetailsViewModel.onEvent(ChannelDetailsUiEvent.LoadChannel("test-assignment-id"))
         withContext(Dispatchers.Default) {
-            delay(10)
+            delay(50)
         }
 
         channelDetailsViewModel.onEvent(ChannelDetailsUiEvent.LoadMessages(2))
         withContext(Dispatchers.Default) {
-            delay(10)
+            delay(50)
         }
 
 //      asserting

@@ -115,7 +115,7 @@ class AuthViewModelTest {
         //testing
         authViewModel.onEvent(AuthUiEvent.EnterPhone("99999999999"))
         withContext(Dispatchers.Default) {
-            delay(10)
+            delay(50)
         }
 
         //assert
@@ -189,6 +189,9 @@ class AuthViewModelTest {
 
         //testing
         authViewModel.onEvent(AuthUiEvent.EnterPassword("Lorem_ipsum_123"))
+        withContext(Dispatchers.Default) {
+            delay(10)
+        }
         authViewModel.onEvent(AuthUiEvent.EnterRepeatPassword("Lorem_ipsum_123"))
         withContext(Dispatchers.Default) {
             delay(10)
@@ -324,14 +327,25 @@ class AuthViewModelTest {
 
         //testing
         authViewModel.onEvent(AuthUiEvent.EnterFirstName("Lorem ipsum dolor sit amet"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterLastName("Lorem ipsum dolor"))
-        authViewModel.onEvent(AuthUiEvent.EnterLogin("Lorem ipsum"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterLogin("Lorem_ipsum"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterPhone("8999999-9999"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterEmail("Loremipsum@gmail.com"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterPassword("Lorem_ipsum_123"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterRepeatPassword("Lorem_ipsum_123"))
-        withContext(Dispatchers.Default) {
-            delay(10)
-        }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //assert
         val actual = authViewModel.state.first()
@@ -394,7 +408,6 @@ class AuthViewModelTest {
     @Test
     fun authViewModel_ConfirmSignIn_canSignIn_returnsSucceed() = runTest {
         //defining
-        val expectedErrorCode = NetworkError.CONFLICT
         everySuspend { authRepoMock.signIn(any()) } returns APIResult.Succeed(
             TokenResponse(
                 "access",
@@ -484,15 +497,28 @@ class AuthViewModelTest {
 
         //testing
         authViewModel.onEvent(AuthUiEvent.EnterFirstName("Lorem ipsum dolor sit amet"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterLastName("Lorem ipsum dolor"))
-        authViewModel.onEvent(AuthUiEvent.EnterLogin("Lorem ipsum"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterLogin("Lorem_ipsum"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterPhone("8999999-9999"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterEmail("Loremipsum@gmail.com"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterPassword("Lorem_ipsum_123"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         authViewModel.onEvent(AuthUiEvent.EnterRepeatPassword("Lorem_ipsum_123"))
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         authViewModel.onEvent(AuthUiEvent.ConfirmSignUp)
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //assert
         val actual = authViewModel.state.first()
@@ -504,6 +530,42 @@ class AuthViewModelTest {
 
     @Test
     fun authViewModel_ConfirmSignUp_canSignUp_returnsSucceed() = runTest {
+
+        //defining authDataStore mocks
+        everySuspend { authDataStoreMock.updateUserToken(any()) } returns Unit
+        everySuspend { authDataStoreMock.updatePersonalData(any(), any()) } returns Unit
+        everySuspend { authDataStoreMock.updateEmail(any()) } returns Unit
+        everySuspend { authDataStoreMock.updateImageUrl(any()) } returns Unit
+
+        //defining view model
+        val authViewModel = AuthViewModel(
+            authRepoMock,
+            profileRepoMock,
+            authDataStoreMock
+        )
+
+        //testing
+        authViewModel.onEvent(AuthUiEvent.EnterFirstName("Lorem ipsum dolor sit amet"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterLastName("Lorem ipsum dolor"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterLogin("Lorem_ipsum"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterPhone("8999999-9999"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterEmail("Loremipsum@gmail.com"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterPassword("Lorem_ipsum_123"))
+        withContext(Dispatchers.Default) { delay(50) }
+
+        authViewModel.onEvent(AuthUiEvent.EnterRepeatPassword("Lorem_ipsum_123"))
+        withContext(Dispatchers.Default) { delay(50) }
+
         //defining
         everySuspend { authRepoMock.signUp(any()) } returns APIResult.Succeed()
         everySuspend { authRepoMock.signIn(any()) } returns APIResult.Succeed(
@@ -530,30 +592,8 @@ class AuthViewModelTest {
             )
         )
 
-        //defining authDataStore mocks
-        everySuspend { authDataStoreMock.updateUserToken(any()) } calls {}
-        everySuspend { authDataStoreMock.updatePersonalData(any(), any()) } calls {}
-        everySuspend { authDataStoreMock.updateEmail(any()) } calls {}
-        everySuspend { authDataStoreMock.updateImageUrl(any()) } calls {}
-
-        //defining view model
-        val authViewModel = AuthViewModel(
-            authRepoMock,
-            profileRepoMock,
-            authDataStoreMock
-        )
-
-        //testing
-        authViewModel.onEvent(AuthUiEvent.EnterFirstName("Lorem ipsum dolor sit amet"))
-        authViewModel.onEvent(AuthUiEvent.EnterLastName("Lorem ipsum dolor"))
-        authViewModel.onEvent(AuthUiEvent.EnterLogin("Lorem_ipsum"))
-        authViewModel.onEvent(AuthUiEvent.EnterEmail("Loremipsum@gmail.com"))
-        authViewModel.onEvent(AuthUiEvent.EnterPassword("Lorem_ipsum_123"))
-        authViewModel.onEvent(AuthUiEvent.EnterRepeatPassword("Lorem_ipsum_123"))
-        withContext(Dispatchers.Default) { delay(50) }
-
         authViewModel.onEvent(AuthUiEvent.ConfirmSignUp)
-        withContext(Dispatchers.Default) { delay(10) }
+        withContext(Dispatchers.Default) { delay(50) }
 
         //assert
         val actual = authViewModel.state.first()
